@@ -66,7 +66,7 @@ cd algoritmusok-labor
 
 ### Publikálás GitHub Pages-en
 1. A repository **Settings → Pages** menüpontjában állítsd a *Source* értéket **Deploy from a branch** opcióra (`main` branch, `/ (root)` mappa).
-2. Mentés után az alkalmazás elérhetővé válik a `https://banyaattila-crypto.github.io/clrs-algoritmus-labor/` címen.
+2. Mentés után az alkalmazás elérhetővé válik a `https://banyaattila-crypto.github.io/algoritmusok-labor/` címen.
 
 ---
 
