@@ -59,8 +59,8 @@ Az alkalmazás szándékosan **külső függőségektől és build-folyamattól 
 
 ### Helyi futtatás
 ```bash
-git clone https://github.com/banyaattila-crypto/clrs-algoritmus-labor.git
-cd clrs-algoritmus-labor
+git clone https://github.com/banyaattila-crypto/algoritmusok-labor.git
+cd algoritmusok-labor
 # Nyisd meg az index.html fájlt bármely modern böngészőben
 ```
 
