@@ -3,25 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CLRS Algoritmus Labor — v0.8.0</title>
+  <title>CLRS Algoritmus Labor — v0.9.0</title>
   <style>
     :root {
-      --bg-page: #FAF8F5;
-      --bg-card: #FFFFFF;
-      --bg-subtle: #F3EFEA;
-      --bg-code: #1E293B;
-      --text-main: #0F172A;
-      --text-muted: #475569;
-      --text-code: #F8FAFC;
-      --border: #E2DCD3;
-      --accent-primary: #B45309;
-      --accent-primary-soft: #FEF3C7;
-      --accent-navy: #1E3A8A;
-      --accent-navy-soft: #DBEAFE;
-      --accent-green: #047857;
-      --accent-green-soft: #D1FAE5;
-      --accent-red: #B91C1C;
-      --accent-red-soft: #FEE2E2;
+      --bg-page: #FAF8F5; --bg-card: #FFFFFF; --bg-subtle: #F3EFEA; --bg-code: #1E293B;
+      --text-main: #0F172A; --text-muted: #475569; --text-code: #F8FAFC; --border: #E2DCD3;
+      --accent-primary: #B45309; --accent-primary-soft: #FEF3C7;
+      --accent-navy: #1E3A8A; --accent-navy-soft: #DBEAFE;
+      --accent-green: #047857; --accent-green-soft: #D1FAE5;
+      --accent-red: #B91C1C; --accent-red-soft: #FEE2E2;
       --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
       --font-serif: "Times New Roman", Georgia, serif;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -29,99 +19,48 @@
     }
 
     body.dark {
-      --bg-page: #0B1120;
-      --bg-card: #111827;
-      --bg-subtle: #1E293B;
-      --bg-code: #020617;
-      --text-main: #F1F5F9;
-      --text-muted: #94A3B8;
-      --text-code: #E2E8F0;
-      --border: #334155;
-      --accent-primary: #F59E0B;
-      --accent-primary-soft: rgba(245, 158, 11, 0.16);
-      --accent-navy: #60A5FA;
-      --accent-navy-soft: rgba(96, 165, 250, 0.16);
-      --accent-green: #34D399;
-      --accent-green-soft: rgba(52, 211, 153, 0.16);
-      --accent-red: #F87171;
-      --accent-red-soft: rgba(248, 113, 113, 0.16);
+      --bg-page: #0B1120; --bg-card: #111827; --bg-subtle: #1E293B; --bg-code: #020617;
+      --text-main: #F1F5F9; --text-muted: #94A3B8; --text-code: #E2E8F0; --border: #334155;
+      --accent-primary: #F59E0B; --accent-primary-soft: rgba(245, 158, 11, 0.16);
+      --accent-navy: #60A5FA; --accent-navy-soft: rgba(96, 165, 250, 0.16);
+      --accent-green: #34D399; --accent-green-soft: rgba(52, 211, 153, 0.16);
+      --accent-red: #F87171; --accent-red-soft: rgba(248, 113, 113, 0.16);
       --shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: var(--font-sans);
-      background: var(--bg-page);
-      color: var(--text-main);
-      line-height: 1.65;
-      transition: background 0.3s, color 0.3s;
-    }
+    body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-main); line-height: 1.65; transition: background 0.3s, color 0.3s; }
 
     /* --- 3D Forgó Logó --- */
-    .logo-container {
-      perspective: 400px; width: 28px; height: 28px; margin-right: 0.5rem;
-    }
-    .cube {
-      width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateCube 8s infinite linear;
-    }
-    .face {
-      position: absolute; width: 28px; height: 28px; border: 2px solid var(--accent-primary);
-      background: var(--accent-primary-soft); opacity: 0.85; box-shadow: inset 0 0 8px rgba(245, 158, 11, 0.4);
-    }
-    .face.front  { transform: translateZ(14px); }
-    .face.back   { transform: rotateY(180deg) translateZ(14px); }
-    .face.right  { transform: rotateY(90deg) translateZ(14px); }
-    .face.left   { transform: rotateY(-90deg) translateZ(14px); }
-    .face.top    { transform: rotateX(90deg) translateZ(14px); }
-    .face.bottom { transform: rotateX(-90deg) translateZ(14px); }
-    
-    @keyframes rotateCube {
-      0%   { transform: rotateX(0deg) rotateY(0deg); }
-      100% { transform: rotateX(360deg) rotateY(360deg); }
-    }
+    .logo-container { perspective: 400px; width: 28px; height: 28px; margin-right: 0.5rem; }
+    .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateCube 8s infinite linear; }
+    .face { position: absolute; width: 28px; height: 28px; border: 2px solid var(--accent-primary); background: var(--accent-primary-soft); opacity: 0.85; box-shadow: inset 0 0 8px rgba(245, 158, 11, 0.4); }
+    .face.front  { transform: translateZ(14px); } .face.back   { transform: rotateY(180deg) translateZ(14px); }
+    .face.right  { transform: rotateY(90deg) translateZ(14px); } .face.left   { transform: rotateY(-90deg) translateZ(14px); }
+    .face.top    { transform: rotateX(90deg) translateZ(14px); } .face.bottom { transform: rotateX(-90deg) translateZ(14px); }
+    @keyframes rotateCube { 0% { transform: rotateX(0deg) rotateY(0deg); } 100% { transform: rotateX(360deg) rotateY(360deg); } }
 
-    /* --- Header --- */
-    header {
-      position: sticky; top: 0; z-index: 50; background: var(--bg-card); border-bottom: 1px solid var(--border);
-      padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    }
+    /* --- Header & Layout --- */
+    header { position: sticky; top: 0; z-index: 50; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
     .brand { display: flex; align-items: center; cursor: pointer; }
-    .brand-badge {
-      background: var(--accent-primary); color: #fff; font-weight: 700; font-size: 0.78rem;
-      padding: 0.25rem 0.55rem; border-radius: 4px; letter-spacing: 0.05em; margin-right: 0.6rem;
-    }
+    .brand-badge { background: var(--accent-primary); color: #fff; font-weight: 700; font-size: 0.78rem; padding: 0.25rem 0.55rem; border-radius: 4px; letter-spacing: 0.05em; margin-right: 0.6rem; }
     .brand-title { font-family: var(--font-serif); font-size: 1.15rem; font-weight: 700; }
     .header-actions { display: flex; align-items: center; gap: 0.6rem; }
-    .btn {
-      border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);
-      padding: 0.42rem 0.85rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
-    }
+    .btn { border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); padding: 0.42rem 0.85rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
     .btn:hover { border-color: var(--accent-primary); }
     .btn-primary { background: var(--accent-primary); color: #fff; border-color: var(--accent-primary); }
     .btn-primary:hover { opacity: 0.92; }
-    .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.8rem; }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    /* --- Elrendezés --- */
+    
     .app-shell { display: grid; grid-template-columns: 295px 1fr; min-height: calc(100vh - 57px); }
     aside { background: var(--bg-card); border-right: 1px solid var(--border); padding: 1.25rem 1rem; overflow-y: auto; max-height: calc(100vh - 57px); position: sticky; top: 57px; }
     main { padding: 2rem clamp(1rem, 4vw, 3rem); max-width: 1100px; width: 100%; margin: 0 auto; }
 
-    /* --- Könyv Nyitóoldal --- */
-    .book-cover-hero {
-      position: relative; background: linear-gradient(135deg, #1E293B, #0F172A); border-radius: 12px;
-      padding: 4rem 2rem; color: #F8FAFC; text-align: center; box-shadow: var(--shadow);
-      border: 1px solid var(--border); border-top: 5px solid var(--accent-primary); margin-bottom: 2.5rem; overflow: hidden;
-    }
-    .book-cover-hero::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background-image: radial-gradient(circle at center, rgba(245, 158, 11, 0.1) 0%, transparent 70%); pointer-events: none;
-    }
+    /* --- Cover & Cards --- */
+    .book-cover-hero { position: relative; background: linear-gradient(135deg, #1E293B, #0F172A); border-radius: 12px; padding: 4rem 2rem; color: #F8FAFC; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); border-top: 5px solid var(--accent-primary); margin-bottom: 2.5rem; overflow: hidden; }
     .book-cover-authors { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: #94A3B8; margin-bottom: 1.5rem; font-weight: 700; }
     .book-cover-title { font-family: var(--font-serif); font-size: clamp(2.5rem, 5vw, 4.2rem); line-height: 1.1; margin-bottom: 1rem; color: #FFFFFF; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     .book-cover-subtitle { font-size: 1.15rem; color: #CBD5E1; font-weight: 300; max-width: 650px; margin: 0 auto 2.5rem; }
 
-    /* --- Tipográfia és kártyák --- */
     .hero-card { background: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid var(--accent-primary); border-radius: 10px; padding: 2rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
     .book-meta { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent-primary); font-weight: 700; margin-bottom: 0.5rem; }
     h1 { font-family: var(--font-serif); font-size: clamp(1.7rem, 3.2vw, 2.35rem); line-height: 1.22; margin-bottom: 0.75rem; }
@@ -130,54 +69,30 @@
 
     .section-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.35rem; box-shadow: var(--shadow); }
     .section-tag { display: inline-block; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-primary); background: var(--accent-primary-soft); padding: 0.2rem 0.55rem; border-radius: 4px; margin-bottom: 0.5rem; }
-
-    /* --- Matematika és Kód --- */
     .math-box { background: var(--bg-subtle); border-left: 3px solid var(--accent-navy); padding: 0.9rem 1.1rem; border-radius: 0 6px 6px 0; font-family: var(--font-serif); font-size: 1.02rem; margin: 0.85rem 0; overflow-x: auto; }
-    .pseudocode { background: var(--bg-code); color: var(--text-code); font-family: var(--font-mono); font-size: 0.86rem; border-radius: 8px; padding: 1rem 0; overflow-x: auto; margin: 0.85rem 0; }
-    .code-line { padding: 0.22rem 1rem; display: flex; gap: 0.85rem; }
-    .code-line.active-line { background: rgba(245, 158, 11, 0.28); border-left: 3px solid #F59E0B; }
-    .line-no { color: #64748B; user-select: none; min-width: 1.4rem; text-align: right; }
-
-    /* --- Vezérlők és Labor panelek --- */
+    
     .lab-panel { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.15rem; margin: 1rem 0; }
     .controls-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem; margin-bottom: 1rem; }
     input[type="text"], input[type="number"] { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 0.42rem 0.65rem; border-radius: 6px; font-size: 0.88rem; }
     
-    .var-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin: 0.75rem 0; }
-    .var-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.55rem 0.75rem; font-family: var(--font-mono); font-size: 0.84rem; }
-
-    /* --- Adatszerkezet Vizualizációk (10. fejezet) --- */
-    .ds-array-box { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; justify-content: center;}
-    .ds-cell {
-      position: relative; border: 2px solid var(--border); background: var(--bg-card); border-radius: 6px; 
-      width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; transition: all 0.2s;
-    }
-    .ds-cell.empty { color: transparent; }
-    .ds-cell.active-top { border-color: var(--accent-primary); background: var(--accent-primary-soft); }
-    .ds-cell.active-head { border-color: var(--accent-green); background: var(--accent-green-soft); }
-    .ds-cell.active-tail { border-color: var(--accent-navy); background: var(--accent-navy-soft); }
+    /* --- Hash Table Visuals --- */
+    .ht-container { display: flex; gap: 1.5rem; overflow-x: auto; padding: 1rem 0; align-items: flex-start;}
+    .ht-slot { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; min-width: 60px;}
+    .ht-index { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); font-weight: 700; background: var(--bg-card); border: 1px solid var(--border); padding: 0.2rem 0.5rem; border-radius: 4px; width:100%; text-align:center;}
     
-    .ds-pointer {
-      position: absolute; bottom: -28px; font-size: 0.75rem; font-family: var(--font-mono); 
-      color: var(--accent-primary); font-weight: bold; white-space: nowrap;
-    }
-    .ds-pointer-head { color: var(--accent-green); bottom: -28px; }
-    .ds-pointer-tail { color: var(--accent-navy); top: -28px; }
-    .ds-index { position: absolute; top: 2px; left: 4px; font-size: 0.65rem; color: var(--text-muted); font-weight: normal;}
+    .ht-chain { display: flex; flex-direction: column; gap: 0.3rem; min-height: 40px; align-items: center; width: 100%;}
+    .ht-node { background: var(--accent-navy-soft); border: 1px solid var(--accent-navy); color: var(--accent-navy); padding: 0.4rem; border-radius: 4px; font-family: var(--font-mono); font-weight: 700; text-align: center; width: 100%; animation: popIn 0.2s ease-out;}
+    .ht-node.highlight { background: var(--accent-green-soft); border-color: var(--accent-green); color: var(--accent-green); }
+    .ht-arrow { color: var(--text-muted); font-size: 0.8rem; }
 
-    /* Linked List */
-    .ll-container { display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding: 1.5rem 0; }
-    .ll-node {
-      display: flex; border: 2px solid var(--accent-navy); border-radius: 8px; background: var(--bg-card);
-      overflow: hidden; min-width: 120px; font-family: var(--font-mono); font-size: 0.9rem;
-    }
-    .ll-part { padding: 0.4rem; text-align: center; border-right: 1px solid var(--border); }
-    .ll-part:last-child { border-right: none; }
-    .ll-part.key { font-weight: 700; background: var(--accent-navy-soft); color: var(--accent-navy); flex: 1; }
-    .ll-arrow { font-size: 1.5rem; color: var(--text-muted); }
-    
-    /* --- Navigáció --- */
+    .oa-cell { background: var(--bg-card); border: 2px solid var(--border); border-radius: 6px; width: 60px; height: 50px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; position: relative; transition: all 0.2s; }
+    .oa-cell.filled { border-color: var(--accent-navy); background: var(--accent-navy-soft); color: var(--accent-navy); }
+    .oa-cell.highlight { border-color: var(--accent-green); background: var(--accent-green-soft); color: var(--accent-green); transform: scale(1.05); }
+    .oa-cell.collision { border-color: var(--accent-red); background: var(--accent-red-soft); color: var(--accent-red); }
+
+    @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* --- Sidebar & Utils --- */
     .nav-section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin: 1rem 0 0.45rem; }
     .nav-item { display: flex; align-items: center; justify-content: space-between; padding: 0.52rem 0.7rem; border-radius: 6px; font-size: 0.86rem; cursor: pointer; margin-bottom: 0.25rem; border: 1px solid transparent; gap: 0.4rem; }
     .nav-item:hover { background: var(--bg-subtle); }
@@ -198,23 +113,14 @@
     .fb-ok { background: var(--accent-green-soft); color: var(--accent-green); }
     .fb-err { background: var(--accent-red-soft); color: var(--accent-red); }
 
-    @media (max-width: 860px) {
-      .app-shell { grid-template-columns: 1fr; }
-      aside { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
-    }
+    @media (max-width: 860px) { .app-shell { grid-template-columns: 1fr; } aside { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); } }
   </style>
 </head>
 <body class="dark">
   <header>
     <div class="brand" onclick="navigate('home')">
-      <div class="logo-container">
-        <div class="cube">
-          <div class="face front"></div><div class="face back"></div>
-          <div class="face right"></div><div class="face left"></div>
-          <div class="face top"></div><div class="face bottom"></div>
-        </div>
-      </div>
-      <span class="brand-badge">CLRS v0.8.0</span>
+      <div class="logo-container"><div class="cube"><div class="face front"></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div></div>
+      <span class="brand-badge">CLRS v0.9.0</span>
       <span class="brand-title">Algoritmus Labor</span>
     </div>
     <div class="header-actions">
@@ -232,7 +138,7 @@
     const STATE = { view: 'home', dark: true, completed: {}, quizSolved: {} };
 
     try {
-      const saved = JSON.parse(localStorage.getItem('clrs_labor_v080'));
+      const saved = JSON.parse(localStorage.getItem('clrs_labor_v090'));
       if (saved) {
         if (saved.view) STATE.view = saved.view;
         if (typeof saved.dark === 'boolean') STATE.dark = saved.dark;
@@ -240,18 +146,11 @@
         if (saved.quizSolved) STATE.quizSolved = saved.quizSolved;
       }
     } catch (e) {}
-
-    function saveState() { try { localStorage.setItem('clrs_labor_v080', JSON.stringify(STATE)); } catch (e) {} }
+    function saveState() { try { localStorage.setItem('clrs_labor_v090', JSON.stringify(STATE)); } catch (e) {} }
 
     document.body.classList.toggle('dark', STATE.dark);
     document.getElementById('themeBtn').textContent = STATE.dark ? 'Világos mód' : 'Sötét mód';
-
-    function toggleTheme() {
-      STATE.dark = !STATE.dark;
-      document.body.classList.toggle('dark', STATE.dark);
-      document.getElementById('themeBtn').textContent = STATE.dark ? 'Világos mód' : 'Sötét mód';
-      saveState();
-    }
+    function toggleTheme() { STATE.dark = !STATE.dark; document.body.classList.toggle('dark', STATE.dark); document.getElementById('themeBtn').textContent = STATE.dark ? 'Világos mód' : 'Sötét mód'; saveState(); }
 
     const UNITS = [
       { id: '1.1', part: 'I. Rész: Alapok', title: '1.1 Algoritmusok', ready: true },
@@ -261,24 +160,12 @@
       { id: '7.0', part: 'II. Rész: Rendezés', title: '7. Gyorsrendezés', ready: true },
       { id: '8.0', part: 'II. Rész: Rendezés', title: '8. Lineáris rendezések', ready: true },
       { id: '10.0', part: 'III. Rész: Adatszerkezetek', title: '10. Elemi adatszerkezetek', ready: true },
-      { id: '11.0', part: 'III. Rész: Adatszerkezetek', title: '11. Hasítótáblák [Terv]', ready: false },
+      { id: '11.0', part: 'III. Rész: Adatszerkezetek', title: '11. Hasítótáblák', ready: true },
       { id: '12.0', part: 'III. Rész: Adatszerkezetek', title: '12. Bináris keresőfák [Terv]', ready: false }
     ];
 
-    function navigate(id) {
-      STATE.view = id;
-      saveState();
-      renderSidebar();
-      renderMain();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function markComplete(id) {
-      STATE.completed[id] = !STATE.completed[id];
-      saveState();
-      renderSidebar();
-      renderMain();
-    }
+    function navigate(id) { STATE.view = id; saveState(); renderSidebar(); renderMain(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function markComplete(id) { STATE.completed[id] = !STATE.completed[id]; saveState(); renderSidebar(); renderMain(); }
 
     function renderSidebar() {
       const doneCount = UNITS.filter(u => u.ready && STATE.completed[u.id]).length;
@@ -291,10 +178,7 @@
         <div class="nav-item ${STATE.view === 'home' ? 'active' : ''}" onclick="navigate('home')"><span>Nyitóoldal & Tartalom</span><span class="status-pill pill-ready">Start</span></div>`;
       let currentPart = '';
       for (const u of UNITS) {
-        if (u.part !== currentPart) {
-          currentPart = u.part;
-          html += `<div class="nav-section-title">${currentPart}</div>`;
-        }
+        if (u.part !== currentPart) { currentPart = u.part; html += `<div class="nav-section-title">${currentPart}</div>`; }
         const pill = !u.ready ? '<span class="status-pill pill-soon">Terv</span>' : STATE.completed[u.id] ? '<span class="status-pill pill-done">Kész</span>' : '<span class="status-pill pill-ready">Aktív</span>';
         html += `<div class="nav-item ${STATE.view === u.id ? 'active' : ''} ${!u.ready ? 'locked' : ''}" onclick="${u.ready ? `navigate('${u.id}')` : ''}"><span>${u.title}</span> ${pill}</div>`;
       }
@@ -307,8 +191,8 @@
           <div class="book-cover-authors">Thomas H. Cormen • Charles E. Leiserson • Ronald L. Rivest • Clifford Stein</div>
           <h1 class="book-cover-title">ALGORITMUSOK</h1>
           <div class="book-cover-subtitle">Harmadik kiadás (Interaktív Laboratórium)</div>
-          <button class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;" onclick="navigate('10.0')">
-            Új: 10. fejezet (Elemi adatszerkezetek) indítása →
+          <button class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;" onclick="navigate('11.0')">
+            Új: 11. fejezet (Hasítótáblák) indítása →
           </button>
         </div>
 
@@ -316,252 +200,189 @@
         <div class="toc-grid">
           <div class="toc-part"><span class="status-pill pill-done">Kész</span><h3>I. Rész: Alapok</h3><p style="font-size:0.88rem; color:var(--text-muted);">Algoritmus elemzés, Θ, Mester-tétel.</p></div>
           <div class="toc-part"><span class="status-pill pill-done">Kész</span><h3>II. Rész: Rendezés</h3><p style="font-size:0.88rem; color:var(--text-muted);">Heapsort, Quicksort, Lineáris rendezések.</p></div>
-          <div class="toc-part"><span class="status-pill pill-ready">Aktív</span><h3>III. Rész: Adatszerkezetek</h3><p style="font-size:0.88rem; color:var(--text-muted);"><strong>10. Elemi adatszerkezetek (Kész)</strong>, Hasítótáblák, BST.</p></div>
+          <div class="toc-part"><span class="status-pill pill-ready">Aktív</span><h3>III. Rész: Adatszerkezetek</h3><p style="font-size:0.88rem; color:var(--text-muted);">10. Elemi adatsz., <strong>11. Hasítótáblák (Kész)</strong>, BST.</p></div>
         </div>
       `;
     }
 
-    /* ==================== UNIT 10.0: DATA STRUCTURES ==================== */
+    /* ==================== UNIT 11.0: HASH TABLES ==================== */
     
-    // Stack State
-    const S_MAX = 6;
-    let stack = new Array(S_MAX).fill(null);
-    let topIdx = 0; // 0 means empty (CLRS 1-based logic: S.top = 0)
-    let sLog = "Verem (Stack) inicializálva. S.top = 0.";
+    // Hash Table (Chaining) State
+    const M_CHAIN = 7;
+    let chainTable = Array.from({length: M_CHAIN}, () => []);
+    let chLog = "Kezdeti állapot. h(k) = k mod 7.";
+    let chLastInserted = null;
 
-    function opPush() {
-      const v = document.getElementById('sVal').value;
-      if (!v) return;
-      if (topIdx === S_MAX) {
-        sLog = `Hiba: Verem túlcsordulás (overflow)! S.top = ${S_MAX}.`;
+    function hashDiv(k, m) { return k % m; }
+
+    function opChInsert() {
+      const v = parseInt(document.getElementById('chVal').value, 10);
+      if (isNaN(v)) return;
+      const h = hashDiv(v, M_CHAIN);
+      chainTable[h].unshift(v); // Insert at head of linked list (O(1))
+      chLastInserted = { val: v, hash: h };
+      chLog = `CHAINED-HASH-INSERT(T, ${v}): h(${v}) = ${v} mod ${M_CHAIN} = ${h}. Beszúrva a T[${h}] lista elejére O(1) időben.`;
+      renderChaining();
+    }
+
+    function opChSearch() {
+      const v = parseInt(document.getElementById('chVal').value, 10);
+      if (isNaN(v)) return;
+      const h = hashDiv(v, M_CHAIN);
+      const list = chainTable[h];
+      const idx = list.indexOf(v);
+      if (idx !== -1) {
+        chLog = `CHAINED-HASH-SEARCH(T, ${v}): h(${v}) = ${h}. A T[${h}] listában a(z) ${idx+1}. helyen MEGTALÁLVA.`;
       } else {
-        topIdx++;
-        stack[topIdx - 1] = v; // JS 0-based underlying
-        sLog = `PUSH(S, ${v}): S.top megnövelve ${topIdx}-re, elem beszúrva.`;
+        chLog = `CHAINED-HASH-SEARCH(T, ${v}): h(${v}) = ${h}. A T[${h}] listában NEM TALÁLHATÓ.`;
       }
-      renderDS();
+      chLastInserted = null;
+      renderChaining();
     }
 
-    function opPop() {
-      if (topIdx === 0) {
-        sLog = `Hiba: Verem alulcsordulás (underflow)! S.top = 0.`;
-      } else {
-        const v = stack[topIdx - 1];
-        stack[topIdx - 1] = null;
-        topIdx--;
-        sLog = `POP(S): Elem (${v}) kivéve. S.top csökkentve ${topIdx}-re.`;
+    function renderChaining() {
+      let html = '';
+      for (let i = 0; i < M_CHAIN; i++) {
+        const list = chainTable[i];
+        let listHtml = '';
+        if (list.length === 0) {
+          listHtml = '<div style="color:var(--text-muted); font-size:0.8rem; margin-top:0.5rem;">NIL</div>';
+        } else {
+          listHtml = list.map((val, idx) => {
+            const isLast = (chLastInserted && chLastInserted.val === val && chLastInserted.hash === i && idx === 0);
+            return `<div class="ht-node ${isLast ? 'highlight' : ''}">${val}</div>${idx < list.length - 1 ? '<div class="ht-arrow">↓</div>' : ''}`;
+          }).join('');
+        }
+        html += `<div class="ht-slot"><div class="ht-index">T[${i}]</div><div class="ht-chain">${listHtml}</div></div>`;
       }
-      renderDS();
+      document.getElementById('chainBox').innerHTML = html;
+      document.getElementById('chainLog').textContent = chLog;
     }
 
-    // Queue State (CLRS array representation)
-    const Q_MAX = 6; 
-    let queue = new Array(Q_MAX).fill(null);
-    let head = 1;
-    let tail = 1;
-    let qLog = "Sor (Queue) inicializálva. Q.head = 1, Q.tail = 1.";
+    // Hash Table (Open Addressing - Linear Probing) State
+    const M_OA = 10;
+    let oaTable = new Array(M_OA).fill(null);
+    let oaLog = "Kezdeti állapot. h(k, i) = (h'(k) + i) mod 10, ahol h'(k) = k mod 10.";
+    let oaSteps = []; // to highlight probing path
 
-    function opEnq() {
-      const v = document.getElementById('qVal').value;
-      if (!v) return;
-      // Check full: head == tail + 1 or (head == 1 and tail == Q_MAX)
-      if (head === (tail === Q_MAX ? 1 : tail + 1)) {
-        qLog = `Hiba: Sor túlcsordulás (overflow)! A Q.head utolérte a Q.tail-t.`;
-      } else {
-        queue[tail - 1] = v;
-        const oldTail = tail;
-        tail = (tail === Q_MAX) ? 1 : tail + 1;
-        qLog = `ENQUEUE(Q, ${v}): Beszúrva Q[${oldTail}]-be. Q.tail új értéke: ${tail}.`;
+    function hashOA(k, i) { return ( (k % M_OA) + i ) % M_OA; }
+
+    function opOaInsert() {
+      const v = parseInt(document.getElementById('oaVal').value, 10);
+      if (isNaN(v)) return;
+      oaSteps = [];
+      let i = 0;
+      while (i < M_OA) {
+        const j = hashOA(v, i);
+        oaSteps.push(j);
+        if (oaTable[j] === null) {
+          oaTable[j] = v;
+          oaLog = `HASH-INSERT(T, ${v}): Próbák száma: ${i+1}. Bekerült a T[${j}] indexre.`;
+          renderOA();
+          return;
+        }
+        i++;
       }
-      renderDS();
+      oaLog = `HASH-INSERT(T, ${v}): Hiba! A hasítótábla betelt (Overflow).`;
+      renderOA();
     }
 
-    function opDeq() {
-      if (head === tail) {
-        qLog = `Hiba: Sor alulcsordulás (underflow)! A sor üres (Q.head == Q.tail).`;
-      } else {
-        const v = queue[head - 1];
-        queue[head - 1] = null; // Visually clear it
-        const oldHead = head;
-        head = (head === Q_MAX) ? 1 : head + 1;
-        qLog = `DEQUEUE(Q): Elem (${v}) eltávolítva a Q[${oldHead}] helyről. Q.head új értéke: ${head}.`;
-      }
-      renderDS();
-    }
-
-    // Linked List State
-    let ll = [
-      { key: 9, prev: null, next: 16 },
-      { key: 16, prev: 9, next: 4 },
-      { key: 4, prev: 16, next: 1 },
-      { key: 1, prev: 4, next: null }
-    ];
-    let llLog = "Kétszeresen láncolt lista betöltve (L.head az első elemre mutat).";
-
-    function opLlInsert() {
-      const v = document.getElementById('llVal').value;
-      if (!v) return;
-      const newNode = { key: v, prev: null, next: ll.length > 0 ? ll[0].key : null };
-      if (ll.length > 0) {
-        ll[0].prev = v;
-      }
-      ll.unshift(newNode);
-      llLog = `LIST-INSERT(L, x): Új elem (${v}) beszúrva a lista elejére (L.head módosult). O(1) idő.`;
-      renderDS();
-    }
-
-    function opLlSearch() {
-      const v = document.getElementById('llVal').value;
-      if (!v) return;
-      let found = false;
-      let steps = 0;
-      for (const node of ll) {
-        steps++;
-        if (node.key == v) { found = true; break; }
-      }
-      if (found) {
-        llLog = `LIST-SEARCH(L, ${v}): Elem MEGTALÁLVA ${steps} lépésben (O(n) a legrosszabb esetben).`;
-      } else {
-        llLog = `LIST-SEARCH(L, ${v}): Elem NEM TALÁLHATÓ (NIL). ${steps} lépés.`;
-      }
-      renderDS();
-    }
-
-    function renderDS() {
-      // Stack
-      let sh = '';
-      for (let i = 1; i <= S_MAX; i++) {
-        const val = stack[i-1];
-        const isActive = (i === topIdx);
-        const isEmpty = (val === null);
-        sh += `<div class="ds-cell ${isEmpty ? 'empty' : ''} ${isActive ? 'active-top' : ''}">
-          <span class="ds-index">${i}</span>
-          ${!isEmpty ? val : ''}
-          ${isActive ? `<span class="ds-pointer">S.top</span>` : ''}
-        </div>`;
-      }
-      document.getElementById('stackBox').innerHTML = sh;
-      document.getElementById('stackLog').textContent = sLog;
-
-      // Queue
-      let qh = '';
-      for (let i = 1; i <= Q_MAX; i++) {
-        const val = queue[i-1];
-        const isHead = (i === head);
-        const isTail = (i === tail);
-        const isEmpty = (val === null);
+    function renderOA() {
+      let html = '';
+      for (let i = 0; i < M_OA; i++) {
+        const val = oaTable[i];
+        let cls = 'oa-cell';
+        if (val !== null) cls += ' filled';
         
-        let ptrs = '';
-        if (isHead) ptrs += `<span class="ds-pointer ds-pointer-head">Q.head</span>`;
-        if (isTail) ptrs += `<span class="ds-pointer ds-pointer-tail">Q.tail</span>`;
-
-        qh += `<div class="ds-cell ${isEmpty ? 'empty' : ''} ${isHead ? 'active-head' : ''} ${isTail && !isHead ? 'active-tail' : ''}">
-          <span class="ds-index">${i}</span>
-          ${!isEmpty ? val : ''}
-          ${ptrs}
-        </div>`;
-      }
-      document.getElementById('queueBox').innerHTML = qh;
-      document.getElementById('queueLog').textContent = qLog;
-
-      // Linked List
-      let lh = '';
-      if (ll.length === 0) {
-        lh = '<div class="ll-node" style="opacity:0.5"><div class="ll-part key">NIL (Üres lista)</div></div>';
-      } else {
-        for (let i = 0; i < ll.length; i++) {
-          const node = ll[i];
-          const isHead = (i === 0);
-          lh += `<div class="ll-node" style="position:relative;">
-            ${isHead ? `<span class="ds-pointer" style="top:-20px;left:5px;bottom:auto;">L.head</span>` : ''}
-            <div class="ll-part">prev<br/>${node.prev === null ? 'NIL' : '•'}</div>
-            <div class="ll-part key">${node.key}</div>
-            <div class="ll-part">next<br/>${node.next === null ? 'NIL' : '•'}</div>
-          </div>`;
-          if (i < ll.length - 1) {
-            lh += `<div class="ll-arrow">⇄</div>`;
+        // Highlight probing path
+        if (oaSteps.length > 0) {
+          const finalPos = oaSteps[oaSteps.length - 1];
+          if (i === finalPos && oaTable[i] !== null) {
+            cls += ' highlight'; // Successful insert
+          } else if (oaSteps.includes(i) && i !== finalPos) {
+            cls += ' collision'; // Collision happened here
           }
         }
+
+        html += `<div style="display:flex; flex-direction:column; align-items:center; gap:0.2rem;">
+          <div style="font-size:0.7rem; color:var(--text-muted); font-family:var(--font-mono);">T[${i}]</div>
+          <div class="${cls}">${val !== null ? val : ''}</div>
+        </div>`;
       }
-      document.getElementById('llBox').innerHTML = lh;
-      document.getElementById('llLog').textContent = llLog;
+      document.getElementById('oaBox').innerHTML = html;
+      document.getElementById('oaLog').textContent = oaLog;
     }
 
-    function renderUnit100() {
-      return unitShell('10.0', '10. Elemi adatszerkezetek (Vermek, Sorok, Listák)', 'III. Rész • 10. fejezet', `
+
+    function renderUnit110() {
+      return unitShell('11.0', '11. Hasítótáblák (Hash Tables)', 'III. Rész • 11. fejezet', `
         <div class="section-block">
-          <span class="section-tag">A–C. Vermek (Stacks) és Sorok (Queues) dinamikus halmazok</span>
-          <p>Ezeknél az adatszerkezeteknél a <code>DELETE</code> művelet előre meghatározott elemet töröl. 
-          A <strong>verem</strong> LIFO (Last-In, First-Out) elven működik, mint egy rugós tányérköteg. A <strong>sor</strong> FIFO (First-In, First-Out) elven, mint az emberek egy pénztárnál.</p>
+          <span class="section-tag">A–C. Közvetlen címzés vs. Hasítás (Hashing)</span>
+          <p>Ha a lehetséges kulcsok $U$ univerzuma kicsi, használhatunk <strong>közvetlen címzésű táblát</strong>, ahol a $k$ kulcsú elem a $T[k]$ pozícióba kerül ($O(1)$). Ha viszont $U$ nagyon nagy, de a ténylegesen tárolt kulcsok $K$ halmaza kicsi, a közvetlen címzés rengeteg memóriát pazarolna.</p>
+          <p>A <strong>hasítótábla (Hash Table)</strong> memóriaigénye $\\Theta(|K|)$. Egy $h(k)$ <em>hasítófüggvény</em> (hash function) segítségével a $k$ kulcsot egy kisebb, $0 \\dots m-1$ méretű $T$ táblába képezzük le. Konfliktus (ütközés/collision) akkor lép fel, ha két különböző kulcs ugyanarra a pozícióra hasít ($h(k_1) = h(k_2)$).</p>
         </div>
 
         <div class="section-block">
-          <span class="section-tag">D. Interaktív Verem (Stack) Labor — LIFO</span>
+          <span class="section-tag">D. Ütközésfeloldás: Láncolás (Chaining) Interaktív Labor</span>
           <div class="math-box">
-            A verem <code>S</code> egy tömbbel ábrázolható, melyhez egy <code>S.top</code> index tartozik. 
-            <code>PUSH(S, x)</code> O(1) időben növeli a mutatót és beírja az értéket.
-            <code>POP(S)</code> O(1) időben kiolvassa és csökkenti a mutatót.
+            Láncolás esetén a tábla minden $T[j]$ eleme egy láncolt listára mutat. 
+            Beszúrás: az új elem a lista <em>elejére</em> kerül ($O(1)$).<br/>
+            Legyen az osztó $m = 7$, és a hasítófüggvény <strong>$h(k) = k \\bmod 7$</strong>.
           </div>
           <div class="lab-panel">
             <div class="controls-row">
-              <input type="text" id="sVal" value="15" style="width:80px;" placeholder="Érték" />
-              <button class="btn btn-primary" onclick="opPush()">PUSH(S, x)</button>
-              <button class="btn" onclick="opPop()">POP(S)</button>
+              <input type="number" id="chVal" value="15" style="width:80px;" placeholder="Kulcs" />
+              <button class="btn btn-primary" onclick="opChInsert()">CHAINED-HASH-INSERT</button>
+              <button class="btn" onclick="opChSearch()">CHAINED-HASH-SEARCH</button>
             </div>
-            <div id="stackLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
-            <div id="stackBox" class="ds-array-box"></div>
+            <div id="chainLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
+            <div id="chainBox" class="ht-container"></div>
           </div>
         </div>
 
         <div class="section-block">
-          <span class="section-tag">E. Interaktív Sor (Queue) Labor — FIFO</span>
+          <span class="section-tag">E. Ütközésfeloldás: Nyílt címzés (Open Addressing) Labor</span>
           <div class="math-box">
-            A sor <code>Q</code> szintén egy tömbbel ábrázolható, de <strong>körkörös (circular)</strong> formában.
-            A <code>Q.head</code> mutatja a sor elejét (innen törlünk), a <code>Q.tail</code> az első szabad helyet a végén (ide szúrunk be).
-            Ha <code>Q.head == Q.tail</code>, a sor üres.
+            A nyílt címzésnél minden elemet magában a táblában tárolunk (nincsenek listák). Ha a kiszámított hely foglalt, szisztematikusan új helyet keresünk (próbák).<br/>
+            <strong>Lineáris próbálás (Linear Probing):</strong> $h(k, i) = (h'(k) + i) \\bmod m$, ahol $i=0, 1, \\dots, m-1$. (Az alapértelmezett hash: $h'(k) = k \\bmod 10$).<br/>
+            <span style="font-size:0.85rem; color:var(--text-muted);">A próbák útvonala: <span style="color:var(--accent-red);font-weight:bold;">piros = ütközés</span>, <span style="color:var(--accent-green);font-weight:bold;">zöld = sikeres beszúrás</span>.</span>
           </div>
           <div class="lab-panel">
             <div class="controls-row">
-              <input type="text" id="qVal" value="42" style="width:80px;" placeholder="Érték" />
-              <button class="btn btn-primary" onclick="opEnq()">ENQUEUE(Q, x)</button>
-              <button class="btn" onclick="opDeq()">DEQUEUE(Q)</button>
+              <input type="number" id="oaVal" value="25" style="width:80px;" placeholder="Kulcs" />
+              <button class="btn btn-primary" onclick="opOaInsert()">HASH-INSERT (Linear Probing)</button>
             </div>
-            <div id="queueLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
-            <div id="queueBox" class="ds-array-box" style="margin-top:2.5rem; margin-bottom:2.5rem;"></div>
+            <div id="oaLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
+            <div id="oaBox" style="display:flex; gap:0.5rem; overflow-x:auto; padding:1rem 0;"></div>
           </div>
         </div>
 
         <div class="section-block">
-          <span class="section-tag">F. Kétszeresen Láncolt Lista (Doubly Linked List)</span>
-          <p>A tömbökkel ellentétben a lista nem folytonos memóriaterület. Minden elem egy objektum, ami tartalmazza a kulcsot (<code>key</code>), és mutatókat a következő (<code>next</code>) illetve az előző (<code>prev</code>) elemre. A lista fejére az <code>L.head</code> mutat.</p>
-          <div class="lab-panel">
-            <div class="controls-row">
-              <input type="text" id="llVal" value="25" style="width:80px;" placeholder="Kulcs" />
-              <button class="btn btn-primary" onclick="opLlInsert()">LIST-INSERT(L, x)</button>
-              <button class="btn" onclick="opLlSearch()">LIST-SEARCH(L, k)</button>
-            </div>
-            <div id="llLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
-            <div id="llBox" class="ll-container"></div>
-          </div>
+          <span class="section-tag">F. Hatékonyság és Teljesítési Tényező (Load Factor)</span>
+          <p>A hasítótábla teljesítménye az <strong>$\\alpha = n / m$</strong> (teljesítési tényező) értékétől függ, ahol $n$ az elemek, $m$ a táblaméret (slotok) száma.</p>
+          <ul>
+            <li><strong>Láncolásnál:</strong> Egy sikertelen keresés várható ideje $\\Theta(1 + \\alpha)$, mert átlagosan $\\alpha$ hosszúságú listát kell átnézni.</li>
+            <li><strong>Nyílt címzésnél:</strong> $\\alpha$ szigorúan $\\le 1$ lehet. Egy sikertelen keresés (vagy beszúrás) várható próbáinak száma legfeljebb $1 / (1 - \\alpha)$ az egyenletes hasítás feltételezése mellett. Ha a tábla betelik, újra kell méretezni (rehashing).</li>
+          </ul>
         </div>
       `, [
         {
-          q: '1. Mi történik, ha egy n elemű tömbbel megvalósított sorban a Q.tail eléri az n értéket, és végrehajtunk még egy ENQUEUE műveletet (feltéve, hogy a sor nem teli)?',
+          q: '1. Mi történik a láncolt hasítótábla (Chaining) beszúrási műveleténél a CLRS definíciója szerint?',
           opts: [
-            'Túlcsordulás (Overflow) hiba lép fel.',
-            'A Q.tail értéke 1 lesz, azaz visszaugrik a tömb elejére (körkörös ábrázolás).'
+            'Az új elem a lista végére kerül O(n) időben.',
+            'Az új elem a lista elejére (head) kerül O(1) időben (feltéve, hogy a kulcs még nincs a listában, vagy megengedjük a duplikátumokat).'
           ],
           ans: 1,
-          exp: 'A CLRS 10.1. szakasza a sort körkörös (wrap-around) tömbként definiálja, így ha a mutató eléri a tömb végét, visszaugrik az 1. indexre.'
+          exp: 'A CLRS szerint a beszúrás a láncolt lista elejére történik O(1) időben, ami jelentősen felgyorsítja a műveletet.'
         },
         {
-          q: '2. Mi a LIST-INSERT(L, x) időbonyolultsága, ha a kulcsot mindig a lista elejére (L.head) szúrjuk be?',
+          q: '2. Milyen problémát okoz a lineáris próbálás (Linear Probing) a nyílt címzésnél?',
           opts: [
-            'O(1) konstans idő, hiszen csak néhány mutatót (L.head, prev, next) kell átállítani.',
-            'O(n) lineáris idő, mert minden más elemet hátrébb kell tolni a memóriában.'
+            'Az elsődleges csomósodást (primary clustering): a foglalt helyek hosszú, folytonos blokkokká állnak össze, növelve az átlagos keresési időt.',
+            'Végtelen ciklust okoz, ha a tábla félig üres.'
           ],
           ans: 0,
-          exp: 'A láncolt lista előnye, hogy az elemek beszúrása és törlése (ha a mutató már megvan) O(1) időben végezhető el, nincsen szükség az elemek tologatására.'
+          exp: 'A lineáris próbálás legnagyobb hátránya az elsődleges csomósodás, ahol a blokkok egyre nagyobbak lesznek, mert bármely üres helyre eső próba a blokk végére fűzi az új elemet.'
         }
       ]);
     }
@@ -597,9 +418,9 @@
     function renderMain() {
       const el = document.getElementById('content');
       if (STATE.view === 'home') { el.innerHTML = renderHome(); } 
-      else if (STATE.view === '10.0') { el.innerHTML = renderUnit100(); renderDS(); } 
+      else if (STATE.view === '11.0') { el.innerHTML = renderUnit110(); renderChaining(); renderOA(); } 
       else {
-        el.innerHTML = `<div class="hero-card"><h1>Régebbi fejezetek...</h1><p>Válassz a menüből a megjelenítéshez (jelenleg a 10. fejezet az aktív demonstráció).</p></div>`;
+        el.innerHTML = `<div class="hero-card"><h1>Régebbi fejezetek...</h1><p>Válassz a menüből a megjelenítéshez (jelenleg a 11. fejezet az aktív demonstráció).</p></div>`;
       }
     }
 
