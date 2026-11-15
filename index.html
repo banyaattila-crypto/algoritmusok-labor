@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CLRS Algoritmus Labor — v0.7.0</title>
+  <title>CLRS Algoritmus Labor — v0.8.0</title>
   <style>
     :root {
       --bg-page: #FAF8F5;
@@ -59,24 +59,14 @@
 
     /* --- 3D Forgó Logó --- */
     .logo-container {
-      perspective: 400px;
-      width: 28px;
-      height: 28px;
-      margin-right: 0.5rem;
+      perspective: 400px; width: 28px; height: 28px; margin-right: 0.5rem;
     }
     .cube {
-      width: 100%; height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: rotateCube 8s infinite linear;
+      width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateCube 8s infinite linear;
     }
     .face {
-      position: absolute;
-      width: 28px; height: 28px;
-      border: 2px solid var(--accent-primary);
-      background: var(--accent-primary-soft);
-      opacity: 0.85;
-      box-shadow: inset 0 0 8px rgba(245, 158, 11, 0.4);
+      position: absolute; width: 28px; height: 28px; border: 2px solid var(--accent-primary);
+      background: var(--accent-primary-soft); opacity: 0.85; box-shadow: inset 0 0 8px rgba(245, 158, 11, 0.4);
     }
     .face.front  { transform: translateZ(14px); }
     .face.back   { transform: rotateY(180deg) translateZ(14px); }
@@ -92,8 +82,7 @@
 
     /* --- Header --- */
     header {
-      position: sticky; top: 0; z-index: 50;
-      background: var(--bg-card); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50; background: var(--bg-card); border-bottom: 1px solid var(--border);
       padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
     }
     .brand { display: flex; align-items: center; cursor: pointer; }
@@ -111,6 +100,7 @@
     .btn-primary { background: var(--accent-primary); color: #fff; border-color: var(--accent-primary); }
     .btn-primary:hover { opacity: 0.92; }
     .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.8rem; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
     /* --- Elrendezés --- */
     .app-shell { display: grid; grid-template-columns: 295px 1fr; min-height: calc(100vh - 57px); }
@@ -151,22 +141,41 @@
     /* --- Vezérlők és Labor panelek --- */
     .lab-panel { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.15rem; margin: 1rem 0; }
     .controls-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem; margin-bottom: 1rem; }
-    input[type="text"] { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 0.42rem 0.65rem; border-radius: 6px; font-size: 0.88rem; }
+    input[type="text"], input[type="number"] { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 0.42rem 0.65rem; border-radius: 6px; font-size: 0.88rem; }
     
     .var-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin: 0.75rem 0; }
     .var-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.55rem 0.75rem; font-family: var(--font-mono); font-size: 0.84rem; }
 
-    /* --- C-tömb és B-tömb (Counting Sort) --- */
-    .cs-array-box { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-    .cs-cell {
-      border: 1px solid var(--border); background: var(--bg-card); border-radius: 6px; padding: 0.4rem 0.6rem;
-      min-width: 48px; text-align: center; font-family: var(--font-mono); font-size: 0.9rem;
-      transition: all 0.2s;
+    /* --- Adatszerkezet Vizualizációk (10. fejezet) --- */
+    .ds-array-box { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; justify-content: center;}
+    .ds-cell {
+      position: relative; border: 2px solid var(--border); background: var(--bg-card); border-radius: 6px; 
+      width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; transition: all 0.2s;
     }
-    .cs-cell.highlight { border-color: var(--accent-primary); background: var(--accent-primary-soft); font-weight: 700; transform: scale(1.05); }
-    .cs-cell.active-c { border-color: var(--accent-green); background: var(--accent-green-soft); font-weight: 700; }
-    .cs-cell.active-b { border-color: var(--accent-navy); background: var(--accent-navy-soft); font-weight: 700; color: #fff;}
-    .cs-label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 2px; }
+    .ds-cell.empty { color: transparent; }
+    .ds-cell.active-top { border-color: var(--accent-primary); background: var(--accent-primary-soft); }
+    .ds-cell.active-head { border-color: var(--accent-green); background: var(--accent-green-soft); }
+    .ds-cell.active-tail { border-color: var(--accent-navy); background: var(--accent-navy-soft); }
+    
+    .ds-pointer {
+      position: absolute; bottom: -28px; font-size: 0.75rem; font-family: var(--font-mono); 
+      color: var(--accent-primary); font-weight: bold; white-space: nowrap;
+    }
+    .ds-pointer-head { color: var(--accent-green); bottom: -28px; }
+    .ds-pointer-tail { color: var(--accent-navy); top: -28px; }
+    .ds-index { position: absolute; top: 2px; left: 4px; font-size: 0.65rem; color: var(--text-muted); font-weight: normal;}
+
+    /* Linked List */
+    .ll-container { display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding: 1.5rem 0; }
+    .ll-node {
+      display: flex; border: 2px solid var(--accent-navy); border-radius: 8px; background: var(--bg-card);
+      overflow: hidden; min-width: 120px; font-family: var(--font-mono); font-size: 0.9rem;
+    }
+    .ll-part { padding: 0.4rem; text-align: center; border-right: 1px solid var(--border); }
+    .ll-part:last-child { border-right: none; }
+    .ll-part.key { font-weight: 700; background: var(--accent-navy-soft); color: var(--accent-navy); flex: 1; }
+    .ll-arrow { font-size: 1.5rem; color: var(--text-muted); }
     
     /* --- Navigáció --- */
     .nav-section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin: 1rem 0 0.45rem; }
@@ -205,7 +214,7 @@
           <div class="face top"></div><div class="face bottom"></div>
         </div>
       </div>
-      <span class="brand-badge">CLRS v0.7.0</span>
+      <span class="brand-badge">CLRS v0.8.0</span>
       <span class="brand-title">Algoritmus Labor</span>
     </div>
     <div class="header-actions">
@@ -223,7 +232,7 @@
     const STATE = { view: 'home', dark: true, completed: {}, quizSolved: {} };
 
     try {
-      const saved = JSON.parse(localStorage.getItem('clrs_labor_v070'));
+      const saved = JSON.parse(localStorage.getItem('clrs_labor_v080'));
       if (saved) {
         if (saved.view) STATE.view = saved.view;
         if (typeof saved.dark === 'boolean') STATE.dark = saved.dark;
@@ -232,7 +241,7 @@
       }
     } catch (e) {}
 
-    function saveState() { try { localStorage.setItem('clrs_labor_v070', JSON.stringify(STATE)); } catch (e) {} }
+    function saveState() { try { localStorage.setItem('clrs_labor_v080', JSON.stringify(STATE)); } catch (e) {} }
 
     document.body.classList.toggle('dark', STATE.dark);
     document.getElementById('themeBtn').textContent = STATE.dark ? 'Világos mód' : 'Sötét mód';
@@ -245,15 +254,15 @@
     }
 
     const UNITS = [
-      { id: '1.1', part: 'I. Rész: Alapok', title: '1.1 Algoritmusok', prereq: 'Nincs', ready: true },
-      { id: '2.1', part: 'I. Rész: Alapok', title: '2.1 Beszúró rendezés', prereq: '1.1', ready: true },
-      { id: '2.3', part: 'I. Rész: Alapok', title: '2.3 Oszd meg és uralkodj', prereq: '2.1', ready: true },
-      { id: '4.0', part: 'I. Rész: Alapok', title: '4. Mester-tétel', prereq: '2.3', ready: true },
-      { id: '6.0', part: 'II. Rész: Rendezés és rendstatisztikák', title: '6. Kupacrendezés', prereq: 'I. Rész', ready: true },
-      { id: '7.0', part: 'II. Rész: Rendezés és rendstatisztikák', title: '7. Gyorsrendezés', prereq: '6.0', ready: true },
-      { id: '8.0', part: 'II. Rész: Rendezés és rendstatisztikák', title: '8. Lineáris idejű rendezések', prereq: '7.0', ready: true },
-      { id: '9.0', part: 'II. Rész: Rendezés és rendstatisztikák', title: '9. Medián és rendstatisztikák [Tervezett]', prereq: '8.0', ready: false },
-      { id: '10.0', part: 'III. Rész: Adatszerkezetek', title: '10–14. Elemi adatszerkezetek [Tervezett]', prereq: 'I–II', ready: false }
+      { id: '1.1', part: 'I. Rész: Alapok', title: '1.1 Algoritmusok', ready: true },
+      { id: '2.1', part: 'I. Rész: Alapok', title: '2.1 Beszúró rendezés', ready: true },
+      { id: '4.0', part: 'I. Rész: Alapok', title: '4. Mester-tétel', ready: true },
+      { id: '6.0', part: 'II. Rész: Rendezés', title: '6. Kupacrendezés', ready: true },
+      { id: '7.0', part: 'II. Rész: Rendezés', title: '7. Gyorsrendezés', ready: true },
+      { id: '8.0', part: 'II. Rész: Rendezés', title: '8. Lineáris rendezések', ready: true },
+      { id: '10.0', part: 'III. Rész: Adatszerkezetek', title: '10. Elemi adatszerkezetek', ready: true },
+      { id: '11.0', part: 'III. Rész: Adatszerkezetek', title: '11. Hasítótáblák [Terv]', ready: false },
+      { id: '12.0', part: 'III. Rész: Adatszerkezetek', title: '12. Bináris keresőfák [Terv]', ready: false }
     ];
 
     function navigate(id) {
@@ -298,185 +307,263 @@
           <div class="book-cover-authors">Thomas H. Cormen • Charles E. Leiserson • Ronald L. Rivest • Clifford Stein</div>
           <h1 class="book-cover-title">ALGORITMUSOK</h1>
           <div class="book-cover-subtitle">Harmadik kiadás (Interaktív Laboratórium)</div>
-          <button class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;" onclick="navigate('8.0')">
-            Új: 8. fejezet (Lineáris idejű rendezések) indítása →
+          <button class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;" onclick="navigate('10.0')">
+            Új: 10. fejezet (Elemi adatszerkezetek) indítása →
           </button>
         </div>
 
         <h2>A könyv szerkezete</h2>
         <div class="toc-grid">
-          <div class="toc-part"><span class="status-pill pill-done">Kész</span><h3>I. Rész: Alapok</h3><p style="font-size:0.88rem; color:var(--text-muted);">Algoritmus elemzés, Rendezések (n² és n lg n), Θ, Mester-tétel.</p></div>
-          <div class="toc-part"><span class="status-pill pill-ready">Aktív</span><h3>II. Rész: Rendezés</h3><p style="font-size:0.88rem; color:var(--text-muted);">Heapsort, Quicksort, <strong>8. Lineáris idejű rendezések (Kész)</strong></p></div>
-          <div class="toc-part"><span class="status-pill pill-soon">Hamarosan</span><h3>III-VI. Rész: Továbbiak</h3><p style="font-size:0.88rem; color:var(--text-muted);">Fák, Gráfok, DP, Mohó stratégiák.</p></div>
+          <div class="toc-part"><span class="status-pill pill-done">Kész</span><h3>I. Rész: Alapok</h3><p style="font-size:0.88rem; color:var(--text-muted);">Algoritmus elemzés, Θ, Mester-tétel.</p></div>
+          <div class="toc-part"><span class="status-pill pill-done">Kész</span><h3>II. Rész: Rendezés</h3><p style="font-size:0.88rem; color:var(--text-muted);">Heapsort, Quicksort, Lineáris rendezések.</p></div>
+          <div class="toc-part"><span class="status-pill pill-ready">Aktív</span><h3>III. Rész: Adatszerkezetek</h3><p style="font-size:0.88rem; color:var(--text-muted);"><strong>10. Elemi adatszerkezetek (Kész)</strong>, Hasítótáblák, BST.</p></div>
         </div>
       `;
     }
 
-    /* ==================== UNIT 8.0: LINEAR SORTING (COUNTING SORT) ==================== */
-    let CS_STEPS = [];
-    let CS_IDX = 0;
+    /* ==================== UNIT 10.0: DATA STRUCTURES ==================== */
+    
+    // Stack State
+    const S_MAX = 6;
+    let stack = new Array(S_MAX).fill(null);
+    let topIdx = 0; // 0 means empty (CLRS 1-based logic: S.top = 0)
+    let sLog = "Verem (Stack) inicializálva. S.top = 0.";
 
-    function buildCountingSortSteps(A, k) {
-      const steps = [];
-      const n = A.length;
-      const C = new Array(k + 1).fill(0);
-      const B = new Array(n).fill(null);
-
-      function snapshot(phase, line, desc, hlA=null, hlC=null, hlB=null) {
-        steps.push({ phase, line, desc, A: [...A], C: [...C], B: [...B], hlA, hlC, hlB, k });
+    function opPush() {
+      const v = document.getElementById('sVal').value;
+      if (!v) return;
+      if (topIdx === S_MAX) {
+        sLog = `Hiba: Verem túlcsordulás (overflow)! S.top = ${S_MAX}.`;
+      } else {
+        topIdx++;
+        stack[topIdx - 1] = v; // JS 0-based underlying
+        sLog = `PUSH(S, ${v}): S.top megnövelve ${topIdx}-re, elem beszúrva.`;
       }
-
-      snapshot("Inicializálás", 1, `C[0..${k}] = 0. Létrehozzuk a C gyakorisági tömböt k+1 mérettel.`);
-
-      for (let j = 0; j < n; j++) {
-        C[A[j]]++;
-        snapshot("Számlálás", 4, `A[${j+1}] = ${A[j]}. Növeljük C[${A[j]}] értékét 1-gyel.`, j, A[j], null);
-      }
-      snapshot("Számlálás kész", 5, `C[i] most azt mutatja, hányszor szerepel i az A tömbben.`);
-
-      for (let i = 1; i <= k; i++) {
-        C[i] = C[i] + C[i - 1];
-        snapshot("Kumulatív összeg", 7, `C[${i}] = C[${i}] + C[${i-1}]. C[${i}] = ${C[i]}. Most C[i] azt mutatja, hány elem <= i.`, null, i, null);
-      }
-
-      for (let j = n - 1; j >= 0; j--) {
-        const val = A[j];
-        const pos = C[val] - 1; // 0-indexed for JS array B
-        B[pos] = val;
-        snapshot("Elhelyezés (Stabilitás!)", 10, `A[${j+1}] = ${val}. C[${val}] = ${C[val]}, így ${val} a B[${C[val]}] (0-index szerint B[${pos}]) helyre kerül.`, j, val, pos);
-        C[val]--;
-        snapshot("Frissítés", 11, `Csökkentjük C[${val}] értékét, hogy a következő ${val} érték eggyel balra kerüljön.`, null, val, null);
-      }
-
-      snapshot("Kész", null, `Az A tömb rendezve lett a B tömbbe O(n+k) időben!`);
-      return steps;
+      renderDS();
     }
 
-    function renderUnit80() {
-      return unitShell('8.0', '8. Lineáris idejű rendezések (Counting Sort, Radix Sort)', 'II. Rész • 8. fejezet: Az alsó korlát áttörése', `
+    function opPop() {
+      if (topIdx === 0) {
+        sLog = `Hiba: Verem alulcsordulás (underflow)! S.top = 0.`;
+      } else {
+        const v = stack[topIdx - 1];
+        stack[topIdx - 1] = null;
+        topIdx--;
+        sLog = `POP(S): Elem (${v}) kivéve. S.top csökkentve ${topIdx}-re.`;
+      }
+      renderDS();
+    }
+
+    // Queue State (CLRS array representation)
+    const Q_MAX = 6; 
+    let queue = new Array(Q_MAX).fill(null);
+    let head = 1;
+    let tail = 1;
+    let qLog = "Sor (Queue) inicializálva. Q.head = 1, Q.tail = 1.";
+
+    function opEnq() {
+      const v = document.getElementById('qVal').value;
+      if (!v) return;
+      // Check full: head == tail + 1 or (head == 1 and tail == Q_MAX)
+      if (head === (tail === Q_MAX ? 1 : tail + 1)) {
+        qLog = `Hiba: Sor túlcsordulás (overflow)! A Q.head utolérte a Q.tail-t.`;
+      } else {
+        queue[tail - 1] = v;
+        const oldTail = tail;
+        tail = (tail === Q_MAX) ? 1 : tail + 1;
+        qLog = `ENQUEUE(Q, ${v}): Beszúrva Q[${oldTail}]-be. Q.tail új értéke: ${tail}.`;
+      }
+      renderDS();
+    }
+
+    function opDeq() {
+      if (head === tail) {
+        qLog = `Hiba: Sor alulcsordulás (underflow)! A sor üres (Q.head == Q.tail).`;
+      } else {
+        const v = queue[head - 1];
+        queue[head - 1] = null; // Visually clear it
+        const oldHead = head;
+        head = (head === Q_MAX) ? 1 : head + 1;
+        qLog = `DEQUEUE(Q): Elem (${v}) eltávolítva a Q[${oldHead}] helyről. Q.head új értéke: ${head}.`;
+      }
+      renderDS();
+    }
+
+    // Linked List State
+    let ll = [
+      { key: 9, prev: null, next: 16 },
+      { key: 16, prev: 9, next: 4 },
+      { key: 4, prev: 16, next: 1 },
+      { key: 1, prev: 4, next: null }
+    ];
+    let llLog = "Kétszeresen láncolt lista betöltve (L.head az első elemre mutat).";
+
+    function opLlInsert() {
+      const v = document.getElementById('llVal').value;
+      if (!v) return;
+      const newNode = { key: v, prev: null, next: ll.length > 0 ? ll[0].key : null };
+      if (ll.length > 0) {
+        ll[0].prev = v;
+      }
+      ll.unshift(newNode);
+      llLog = `LIST-INSERT(L, x): Új elem (${v}) beszúrva a lista elejére (L.head módosult). O(1) idő.`;
+      renderDS();
+    }
+
+    function opLlSearch() {
+      const v = document.getElementById('llVal').value;
+      if (!v) return;
+      let found = false;
+      let steps = 0;
+      for (const node of ll) {
+        steps++;
+        if (node.key == v) { found = true; break; }
+      }
+      if (found) {
+        llLog = `LIST-SEARCH(L, ${v}): Elem MEGTALÁLVA ${steps} lépésben (O(n) a legrosszabb esetben).`;
+      } else {
+        llLog = `LIST-SEARCH(L, ${v}): Elem NEM TALÁLHATÓ (NIL). ${steps} lépés.`;
+      }
+      renderDS();
+    }
+
+    function renderDS() {
+      // Stack
+      let sh = '';
+      for (let i = 1; i <= S_MAX; i++) {
+        const val = stack[i-1];
+        const isActive = (i === topIdx);
+        const isEmpty = (val === null);
+        sh += `<div class="ds-cell ${isEmpty ? 'empty' : ''} ${isActive ? 'active-top' : ''}">
+          <span class="ds-index">${i}</span>
+          ${!isEmpty ? val : ''}
+          ${isActive ? `<span class="ds-pointer">S.top</span>` : ''}
+        </div>`;
+      }
+      document.getElementById('stackBox').innerHTML = sh;
+      document.getElementById('stackLog').textContent = sLog;
+
+      // Queue
+      let qh = '';
+      for (let i = 1; i <= Q_MAX; i++) {
+        const val = queue[i-1];
+        const isHead = (i === head);
+        const isTail = (i === tail);
+        const isEmpty = (val === null);
+        
+        let ptrs = '';
+        if (isHead) ptrs += `<span class="ds-pointer ds-pointer-head">Q.head</span>`;
+        if (isTail) ptrs += `<span class="ds-pointer ds-pointer-tail">Q.tail</span>`;
+
+        qh += `<div class="ds-cell ${isEmpty ? 'empty' : ''} ${isHead ? 'active-head' : ''} ${isTail && !isHead ? 'active-tail' : ''}">
+          <span class="ds-index">${i}</span>
+          ${!isEmpty ? val : ''}
+          ${ptrs}
+        </div>`;
+      }
+      document.getElementById('queueBox').innerHTML = qh;
+      document.getElementById('queueLog').textContent = qLog;
+
+      // Linked List
+      let lh = '';
+      if (ll.length === 0) {
+        lh = '<div class="ll-node" style="opacity:0.5"><div class="ll-part key">NIL (Üres lista)</div></div>';
+      } else {
+        for (let i = 0; i < ll.length; i++) {
+          const node = ll[i];
+          const isHead = (i === 0);
+          lh += `<div class="ll-node" style="position:relative;">
+            ${isHead ? `<span class="ds-pointer" style="top:-20px;left:5px;bottom:auto;">L.head</span>` : ''}
+            <div class="ll-part">prev<br/>${node.prev === null ? 'NIL' : '•'}</div>
+            <div class="ll-part key">${node.key}</div>
+            <div class="ll-part">next<br/>${node.next === null ? 'NIL' : '•'}</div>
+          </div>`;
+          if (i < ll.length - 1) {
+            lh += `<div class="ll-arrow">⇄</div>`;
+          }
+        }
+      }
+      document.getElementById('llBox').innerHTML = lh;
+      document.getElementById('llLog').textContent = llLog;
+    }
+
+    function renderUnit100() {
+      return unitShell('10.0', '10. Elemi adatszerkezetek (Vermek, Sorok, Listák)', 'III. Rész • 10. fejezet', `
         <div class="section-block">
-          <span class="section-tag">A–C. Az összehasonlító rendezések alsó korlátja (8.1)</span>
-          <p>Minden olyan rendező algoritmus, amely csak elemek <strong>összehasonlításán</strong> (<code>&lt;, &le;, &gt;, &ge;</code>) alapul (mint a Merge Sort, Heapsort, Quicksort), a legrosszabb esetben <strong>&Omega;(n lg n)</strong> összehasonlítást igényel. Ezt egy döntési fával bizonyíthatjuk, amelynek $n!$ levele van (minden lehetséges permutáció), és egy bináris fa magassága, aminek $n!$ levele van, legalább $\\lg(n!) = \\Theta(n \\lg n)$.</p>
-          <p>Hogyan lehet ennél gyorsabban, <strong>lineáris időben (O(n))</strong> rendezni? Úgy, hogy <em>nem hasonlítjuk össze</em> az elemeket, hanem kihasználjuk az értékükről szerzett többletinformációt (például, hogy kis egész számok)!</p>
+          <span class="section-tag">A–C. Vermek (Stacks) és Sorok (Queues) dinamikus halmazok</span>
+          <p>Ezeknél az adatszerkezeteknél a <code>DELETE</code> művelet előre meghatározott elemet töröl. 
+          A <strong>verem</strong> LIFO (Last-In, First-Out) elven működik, mint egy rugós tányérköteg. A <strong>sor</strong> FIFO (First-In, First-Out) elven, mint az emberek egy pénztárnál.</p>
         </div>
 
         <div class="section-block">
-          <span class="section-tag">D. Interaktív COUNTING-SORT Labor (8.2)</span>
-          <p>A Leszámláló rendezés feltételezi, hogy minden bemeneti elem egy egész szám a $0$ és $k$ közötti tartományban. A $C$ tömbben összeszámolja az elemek gyakoriságát, majd a kumulatív összegből megmondja, pontosan hová (melyik indexre) kell kerülnie az elemnek a $B$ kimeneti tömbben.</p>
-          
+          <span class="section-tag">D. Interaktív Verem (Stack) Labor — LIFO</span>
+          <div class="math-box">
+            A verem <code>S</code> egy tömbbel ábrázolható, melyhez egy <code>S.top</code> index tartozik. 
+            <code>PUSH(S, x)</code> O(1) időben növeli a mutatót és beírja az értéket.
+            <code>POP(S)</code> O(1) időben kiolvassa és csökkenti a mutatót.
+          </div>
           <div class="lab-panel">
             <div class="controls-row">
-              <label>A tömb (számok 0 és k között):</label>
-              <input type="text" id="csInput" value="2, 5, 3, 0, 2, 3, 0, 3" />
-              <label>k (max érték):</label>
-              <input type="text" id="csK" value="5" style="width:60px;" />
-              <button class="btn btn-primary" onclick="initCS()">Futtatás</button>
-              <button class="btn" onclick="stepCS(-1)">← Előző</button>
-              <button class="btn" onclick="stepCS(1)">Következő →</button>
-              <span id="csCounter" style="font-size:0.84rem; font-weight:700;"></span>
+              <input type="text" id="sVal" value="15" style="width:80px;" placeholder="Érték" />
+              <button class="btn btn-primary" onclick="opPush()">PUSH(S, x)</button>
+              <button class="btn" onclick="opPop()">POP(S)</button>
             </div>
-
-            <div class="var-grid" style="grid-template-columns: 100px 1fr;">
-              <div style="font-weight:bold; align-self:center;">A (bemenet):</div>
-              <div id="csArrayA" class="cs-array-box"></div>
-              
-              <div style="font-weight:bold; align-self:center;">C (számláló):</div>
-              <div id="csArrayC" class="cs-array-box"></div>
-              
-              <div style="font-weight:bold; align-self:center;">B (kimenet):</div>
-              <div id="csArrayB" class="cs-array-box"></div>
-            </div>
-
-            <div id="csDesc" class="math-box" style="margin-top:1rem;"></div>
-
-            <div class="pseudocode" id="csCode">
-              <div class="code-line" data-line="1"><span class="line-no">1</span><span>let C[0..k] be a new array initialized to 0</span></div>
-              <div class="code-line" data-line="3"><span class="line-no">3</span><span><strong>for</strong> j = 1 <strong>to</strong> A.length</span></div>
-              <div class="code-line" data-line="4"><span class="line-no">4</span><span>&nbsp;&nbsp;&nbsp;&nbsp;C[A[j]] = C[A[j]] + 1</span></div>
-              <div class="code-line" data-line="6"><span class="line-no">6</span><span><strong>for</strong> i = 1 <strong>to</strong> k</span></div>
-              <div class="code-line" data-line="7"><span class="line-no">7</span><span>&nbsp;&nbsp;&nbsp;&nbsp;C[i] = C[i] + C[i - 1]</span></div>
-              <div class="code-line" data-line="9"><span class="line-no">9</span><span><strong>for</strong> j = A.length <strong>downto</strong> 1</span></div>
-              <div class="code-line" data-line="10"><span class="line-no">10</span><span>&nbsp;&nbsp;&nbsp;&nbsp;B[C[A[j]]] = A[j]</span></div>
-              <div class="code-line" data-line="11"><span class="line-no">11</span><span>&nbsp;&nbsp;&nbsp;&nbsp;C[A[j]] = C[A[j]] - 1</span></div>
-            </div>
+            <div id="stackLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
+            <div id="stackBox" class="ds-array-box"></div>
           </div>
         </div>
 
         <div class="section-block">
-          <span class="section-tag">E. Radix Sort és Bucket Sort (8.3 - 8.4)</span>
+          <span class="section-tag">E. Interaktív Sor (Queue) Labor — FIFO</span>
           <div class="math-box">
-            <strong>Radix Sort (Számjegyes rendezés):</strong> Ha a számok túl nagyok (pl. $k = n^3$, ahol a Counting Sort $O(n^3)$ lenne), a számokat $d$ db számjegyre bontjuk. A legkisebb helyiértéktől haladunk a legnagyobb felé, és minden számjegyen végrehajtunk egy <strong>stabil</strong> rendezést (pl. Counting Sort). Futásidő: <strong>&Theta;(d(n+k))</strong>.<br/><br/>
-            <strong>Bucket Sort (Edényrendezés):</strong> A $[0, 1)$ intervallumban egyenletesen eloszló valós számok rendezésére. A $[0, 1)$ intervallumot $n$ db egyenlő méretű "edényre" (bucket) osztjuk. A bemeneti elemeket beszórjuk az edényekbe, minden edényt külön rendezünk (Insertion Sort), majd összefűzzük őket. Várható futásidő: <strong>O(n)</strong>.
+            A sor <code>Q</code> szintén egy tömbbel ábrázolható, de <strong>körkörös (circular)</strong> formában.
+            A <code>Q.head</code> mutatja a sor elejét (innen törlünk), a <code>Q.tail</code> az első szabad helyet a végén (ide szúrunk be).
+            Ha <code>Q.head == Q.tail</code>, a sor üres.
+          </div>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <input type="text" id="qVal" value="42" style="width:80px;" placeholder="Érték" />
+              <button class="btn btn-primary" onclick="opEnq()">ENQUEUE(Q, x)</button>
+              <button class="btn" onclick="opDeq()">DEQUEUE(Q)</button>
+            </div>
+            <div id="queueLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
+            <div id="queueBox" class="ds-array-box" style="margin-top:2.5rem; margin-bottom:2.5rem;"></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">F. Kétszeresen Láncolt Lista (Doubly Linked List)</span>
+          <p>A tömbökkel ellentétben a lista nem folytonos memóriaterület. Minden elem egy objektum, ami tartalmazza a kulcsot (<code>key</code>), és mutatókat a következő (<code>next</code>) illetve az előző (<code>prev</code>) elemre. A lista fejére az <code>L.head</code> mutat.</p>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <input type="text" id="llVal" value="25" style="width:80px;" placeholder="Kulcs" />
+              <button class="btn btn-primary" onclick="opLlInsert()">LIST-INSERT(L, x)</button>
+              <button class="btn" onclick="opLlSearch()">LIST-SEARCH(L, k)</button>
+            </div>
+            <div id="llLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
+            <div id="llBox" class="ll-container"></div>
           </div>
         </div>
       `, [
         {
-          q: '1. Miért MÁSODRENDŰ (kritikus) fontosságú, hogy a Counting Sort "stabil" (stable) rendezés legyen?',
+          q: '1. Mi történik, ha egy n elemű tömbbel megvalósított sorban a Q.tail eléri az n értéket, és végrehajtunk még egy ENQUEUE műveletet (feltéve, hogy a sor nem teli)?',
           opts: [
-            'Mert a stabilitás garantálja a lineáris O(n+k) futásidőt.',
-            'Mert a Radix Sort olyan stabil segédrendezésre épít, amely megőrzi az azonos értékű számjegyek korábbi (kisebb helyiértékű) relatív sorrendjét.'
+            'Túlcsordulás (Overflow) hiba lép fel.',
+            'A Q.tail értéke 1 lesz, azaz visszaugrik a tömb elejére (körkörös ábrázolás).'
           ],
           ans: 1,
-          exp: 'A Radix Sort csak akkor működik helyesen a legkisebb helyiértéktől (LSD) a legnagyobbig haladva, ha a segédrendezés stabil, és nem rontja el a már korábban rendezett helyiértékeket.'
+          exp: 'A CLRS 10.1. szakasza a sort körkörös (wrap-around) tömbként definiálja, így ha a mutató eléri a tömb végét, visszaugrik az 1. indexre.'
         },
         {
-          q: '2. Mi a Counting Sort idő- és memóriabonyolultsága (A[1..n], max érték k)?',
+          q: '2. Mi a LIST-INSERT(L, x) időbonyolultsága, ha a kulcsot mindig a lista elejére (L.head) szúrjuk be?',
           opts: [
-            'Θ(n + k) idő és Θ(k) extra memória (a C tömb miatt, ha B a kimenet).',
-            'Θ(n lg n) idő és O(1) memória.'
+            'O(1) konstans idő, hiszen csak néhány mutatót (L.head, prev, next) kell átállítani.',
+            'O(n) lineáris idő, mert minden más elemet hátrébb kell tolni a memóriában.'
           ],
           ans: 0,
-          exp: 'A ciklusok n, k és n lépést tesznek meg, így az idő Θ(n+k). Memóriában egy k méretű C tömbre és egy n méretű B kimeneti tömbre van szükség.'
+          exp: 'A láncolt lista előnye, hogy az elemek beszúrása és törlése (ha a mutató már megvan) O(1) időben végezhető el, nincsen szükség az elemek tologatására.'
         }
       ]);
-    }
-
-    function initCS() {
-      const inp = document.getElementById('csInput');
-      const kInp = document.getElementById('csK');
-      if (!inp || !kInp) return;
-      const arr = inp.value.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x) && x >= 0);
-      const k = parseInt(kInp.value, 10);
-      if (arr.length < 1 || isNaN(k)) return;
-      CS_STEPS = buildCountingSortSteps(arr, k);
-      CS_IDX = 0;
-      renderCSStep();
-    }
-
-    function stepCS(d) {
-      if (!CS_STEPS.length) return;
-      CS_IDX = Math.max(0, Math.min(CS_STEPS.length - 1, CS_IDX + d));
-      renderCSStep();
-    }
-
-    function renderCSStep() {
-      const s = CS_STEPS[CS_IDX];
-      if (!s) return;
-      document.getElementById('csCounter').textContent = `Lépés: ${CS_IDX + 1} / ${CS_STEPS.length}`;
-      
-      // Render A
-      document.getElementById('csArrayA').innerHTML = s.A.map((v, i) => 
-        `<div class="cs-cell ${s.hlA === i ? 'highlight' : ''}"><span class="cs-label">A[${i+1}]</span>${v}</div>`
-      ).join('');
-      
-      // Render C
-      document.getElementById('csArrayC').innerHTML = s.C.map((v, i) => 
-        `<div class="cs-cell ${s.hlC === i ? 'active-c' : ''}"><span class="cs-label">C[${i}]</span>${v}</div>`
-      ).join('');
-
-      // Render B
-      document.getElementById('csArrayB').innerHTML = s.B.map((v, i) => 
-        `<div class="cs-cell ${s.hlB === i ? 'active-b' : ''}"><span class="cs-label">B[${i+1}]</span>${v !== null ? v : '-'}</div>`
-      ).join('');
-
-      document.getElementById('csDesc').innerHTML = `<strong>${s.phase}:</strong> ${s.desc}`;
-      
-      document.querySelectorAll('#csCode .code-line').forEach(el => {
-         el.classList.remove('active-line');
-         if (s.line && Number(el.dataset.line) === s.line) {
-             el.classList.add('active-line');
-         }
-      });
     }
 
     /* ==================== EGYSÉG VÁZ (Shared) ==================== */
@@ -494,7 +581,7 @@
 
       return `<div class="hero-card" style="padding:1.5rem;">
           <div class="book-meta">${subtitle}</div><h1 style="margin-bottom:0.35rem;">${title}</h1>
-          <div style="font-size:0.86rem; color:var(--text-muted);"><strong>Szükséges előismeretek:</strong> ${u ? u.prereq : ''}</div>
+          <div style="font-size:0.86rem; color:var(--text-muted);"><strong>Szükséges előismeretek:</strong> ${u ? u.prereq : 'Nincs'}</div>
         </div>
         ${bodyHtml}
         <div class="section-block"><span class="section-tag">Ellenőrző kérdések</span>${quizHtml}
@@ -510,9 +597,9 @@
     function renderMain() {
       const el = document.getElementById('content');
       if (STATE.view === 'home') { el.innerHTML = renderHome(); } 
-      else if (STATE.view === '8.0') { el.innerHTML = renderUnit80(); initCS(); } 
+      else if (STATE.view === '10.0') { el.innerHTML = renderUnit100(); renderDS(); } 
       else {
-        el.innerHTML = `<div class="hero-card"><h1>Régebbi fejezetek...</h1><p>Válassz a menüből a megjelenítéshez (jelenleg a 8. fejezet az aktív demonstráció).</p></div>`;
+        el.innerHTML = `<div class="hero-card"><h1>Régebbi fejezetek...</h1><p>Válassz a menüből a megjelenítéshez (jelenleg a 10. fejezet az aktív demonstráció).</p></div>`;
       }
     }
 
