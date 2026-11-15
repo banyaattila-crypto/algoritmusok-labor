@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CLRS Algoritmus Labor — v0.9.0</title>
+  <title>CLRS Algoritmus Labor — v0.10.2 (Teljes verzió)</title>
   <style>
     :root {
       --bg-page: #FAF8F5; --bg-card: #FFFFFF; --bg-subtle: #F3EFEA; --bg-code: #1E293B;
@@ -31,7 +31,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-main); line-height: 1.65; transition: background 0.3s, color 0.3s; }
 
-    /* --- 3D Forgó Logó --- */
+    /* 3D Forgó Logó */
     .logo-container { perspective: 400px; width: 28px; height: 28px; margin-right: 0.5rem; }
     .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateCube 8s infinite linear; }
     .face { position: absolute; width: 28px; height: 28px; border: 2px solid var(--accent-primary); background: var(--accent-primary-soft); opacity: 0.85; box-shadow: inset 0 0 8px rgba(245, 158, 11, 0.4); }
@@ -40,7 +40,7 @@
     .face.top    { transform: rotateX(90deg) translateZ(14px); } .face.bottom { transform: rotateX(-90deg) translateZ(14px); }
     @keyframes rotateCube { 0% { transform: rotateX(0deg) rotateY(0deg); } 100% { transform: rotateX(360deg) rotateY(360deg); } }
 
-    /* --- Header & Layout --- */
+    /* Header & Layout */
     header { position: sticky; top: 0; z-index: 50; background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
     .brand { display: flex; align-items: center; cursor: pointer; }
     .brand-badge { background: var(--accent-primary); color: #fff; font-weight: 700; font-size: 0.78rem; padding: 0.25rem 0.55rem; border-radius: 4px; letter-spacing: 0.05em; margin-right: 0.6rem; }
@@ -51,11 +51,11 @@
     .btn-primary { background: var(--accent-primary); color: #fff; border-color: var(--accent-primary); }
     .btn-primary:hover { opacity: 0.92; }
     
-    .app-shell { display: grid; grid-template-columns: 295px 1fr; min-height: calc(100vh - 57px); }
+    .app-shell { display: grid; grid-template-columns: 310px 1fr; min-height: calc(100vh - 57px); }
     aside { background: var(--bg-card); border-right: 1px solid var(--border); padding: 1.25rem 1rem; overflow-y: auto; max-height: calc(100vh - 57px); position: sticky; top: 57px; }
     main { padding: 2rem clamp(1rem, 4vw, 3rem); max-width: 1100px; width: 100%; margin: 0 auto; }
 
-    /* --- Cover & Cards --- */
+    /* Cover, Typography, Utils */
     .book-cover-hero { position: relative; background: linear-gradient(135deg, #1E293B, #0F172A); border-radius: 12px; padding: 4rem 2rem; color: #F8FAFC; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); border-top: 5px solid var(--accent-primary); margin-bottom: 2.5rem; overflow: hidden; }
     .book-cover-authors { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.15em; color: #94A3B8; margin-bottom: 1.5rem; font-weight: 700; }
     .book-cover-title { font-family: var(--font-serif); font-size: clamp(2.5rem, 5vw, 4.2rem); line-height: 1.1; margin-bottom: 1rem; color: #FFFFFF; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
@@ -73,27 +73,109 @@
     
     .lab-panel { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 1.15rem; margin: 1rem 0; }
     .controls-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.65rem; margin-bottom: 1rem; }
-    input[type="text"], input[type="number"] { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 0.42rem 0.65rem; border-radius: 6px; font-size: 0.88rem; }
+    input[type="text"], input[type="number"], select { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 0.42rem 0.65rem; border-radius: 6px; font-size: 0.88rem; }
     
-    /* --- Hash Table Visuals --- */
+    /* Code and Pseudocode */
+    .pseudocode { background: var(--bg-code); color: var(--text-code); font-family: var(--font-mono); font-size: 0.86rem; border-radius: 8px; padding: 1rem 0; overflow-x: auto; margin: 0.85rem 0; }
+    .code-line { padding: 0.22rem 1rem; display: flex; gap: 0.85rem; }
+    .code-line.active-line { background: rgba(245, 158, 11, 0.28); border-left: 3px solid #F59E0B; }
+    .line-no { color: #64748B; user-select: none; min-width: 1.4rem; text-align: right; }
+
+    /* UI grids */
+    .var-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem; margin: 0.75rem 0; }
+    .var-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.55rem 0.75rem; font-family: var(--font-mono); font-size: 0.84rem; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 0.9rem 0; font-size: 0.88rem; }
+    th, td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; }
+    th { background: var(--bg-subtle); font-weight: 700; }
+
+    /* Array Bars (Insertion, Merge, Quick) */
+    .array-bars { display: flex; align-items: flex-end; justify-content: center; gap: 0.65rem; min-height: 185px; padding: 1.25rem 0.5rem 0.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; margin: 0.75rem 0; flex-wrap: wrap;}
+    .bar-col { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; min-width: 44px; }
+    .bar-rect { width: 40px; border-radius: 5px 5px 0 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0.35rem; color: #fff; font-weight: 700; font-size: 0.85rem; transition: height 0.2s, background 0.2s; background: #475569; }
+    .bar-sorted { background: var(--accent-green); }
+    .bar-key { background: var(--accent-primary); }
+    .bar-compare { background: var(--accent-navy); }
+    .bar-idx { font-size: 0.74rem; color: var(--text-muted); font-family: var(--font-mono); }
+    /* QS additions */
+    .bar-pivot { background: var(--accent-primary); }
+    .bar-less { background: var(--accent-green); }
+    .bar-greater { background: var(--accent-navy); }
+    .bar-inactive { background: #334155; opacity: 0.3; }
+
+    /* Heap Cells */
+    .heap-strip { display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center; margin: 0.75rem 0; }
+    .heap-cell { border: 1px solid var(--border); background: var(--bg-card); border-radius: 6px; padding: 0.35rem 0.55rem; min-width: 52px; text-align: center; font-family: var(--font-mono); font-size: 0.84rem; }
+    .heap-cell.active { border-color: var(--accent-primary); background: var(--accent-primary-soft); font-weight: 700; }
+    .heap-cell.compare { border-color: var(--accent-navy); background: var(--accent-navy-soft); font-weight: 700; }
+    .heap-cell.sorted { border-color: var(--accent-green); background: var(--accent-green-soft); }
+
+    /* Counting Sort Cells */
+    .cs-array-box { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .cs-cell { border: 1px solid var(--border); background: var(--bg-card); border-radius: 6px; padding: 0.4rem 0.6rem; min-width: 48px; text-align: center; font-family: var(--font-mono); font-size: 0.9rem; transition: all 0.2s; }
+    .cs-cell.highlight { border-color: var(--accent-primary); background: var(--accent-primary-soft); font-weight: 700; transform: scale(1.05); }
+    .cs-cell.active-c { border-color: var(--accent-green); background: var(--accent-green-soft); font-weight: 700; }
+    .cs-cell.active-b { border-color: var(--accent-navy); background: var(--accent-navy-soft); font-weight: 700; color: #fff;}
+    .cs-label { font-size: 0.7rem; color: var(--text-muted); display: block; margin-bottom: 2px; }
+
+    /* Data Structures (Stacks, Queues) */
+    .ds-array-box { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; justify-content: center;}
+    .ds-cell { position: relative; border: 2px solid var(--border); background: var(--bg-card); border-radius: 6px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; transition: all 0.2s; }
+    .ds-cell.empty { color: transparent; }
+    .ds-cell.active-top { border-color: var(--accent-primary); background: var(--accent-primary-soft); }
+    .ds-cell.active-head { border-color: var(--accent-green); background: var(--accent-green-soft); }
+    .ds-cell.active-tail { border-color: var(--accent-navy); background: var(--accent-navy-soft); }
+    .ds-pointer { position: absolute; bottom: -28px; font-size: 0.75rem; font-family: var(--font-mono); color: var(--accent-primary); font-weight: bold; white-space: nowrap; }
+    .ds-pointer-head { color: var(--accent-green); bottom: -28px; }
+    .ds-pointer-tail { color: var(--accent-navy); top: -28px; }
+    .ds-index { position: absolute; top: 2px; left: 4px; font-size: 0.65rem; color: var(--text-muted); font-weight: normal;}
+
+    /* Linked List */
+    .ll-container { display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding: 1.5rem 0; }
+    .ll-node { display: flex; border: 2px solid var(--accent-navy); border-radius: 8px; background: var(--bg-card); overflow: hidden; min-width: 120px; font-family: var(--font-mono); font-size: 0.9rem; }
+    .ll-part { padding: 0.4rem; text-align: center; border-right: 1px solid var(--border); }
+    .ll-part:last-child { border-right: none; }
+    .ll-part.key { font-weight: 700; background: var(--accent-navy-soft); color: var(--accent-navy); flex: 1; }
+    .ll-arrow { font-size: 1.5rem; color: var(--text-muted); }
+
+    /* Hash Tables */
     .ht-container { display: flex; gap: 1.5rem; overflow-x: auto; padding: 1rem 0; align-items: flex-start;}
     .ht-slot { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; min-width: 60px;}
     .ht-index { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); font-weight: 700; background: var(--bg-card); border: 1px solid var(--border); padding: 0.2rem 0.5rem; border-radius: 4px; width:100%; text-align:center;}
-    
     .ht-chain { display: flex; flex-direction: column; gap: 0.3rem; min-height: 40px; align-items: center; width: 100%;}
     .ht-node { background: var(--accent-navy-soft); border: 1px solid var(--accent-navy); color: var(--accent-navy); padding: 0.4rem; border-radius: 4px; font-family: var(--font-mono); font-weight: 700; text-align: center; width: 100%; animation: popIn 0.2s ease-out;}
     .ht-node.highlight { background: var(--accent-green-soft); border-color: var(--accent-green); color: var(--accent-green); }
-    .ht-arrow { color: var(--text-muted); font-size: 0.8rem; }
-
+    
     .oa-cell { background: var(--bg-card); border: 2px solid var(--border); border-radius: 6px; width: 60px; height: 50px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; position: relative; transition: all 0.2s; }
     .oa-cell.filled { border-color: var(--accent-navy); background: var(--accent-navy-soft); color: var(--accent-navy); }
     .oa-cell.highlight { border-color: var(--accent-green); background: var(--accent-green-soft); color: var(--accent-green); transform: scale(1.05); }
     .oa-cell.collision { border-color: var(--accent-red); background: var(--accent-red-soft); color: var(--accent-red); }
 
-    @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    /* BST */
+    svg.bst-chart { width: 100%; height: 350px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1rem; }
+    .bst-node circle { fill: var(--bg-card); stroke: var(--accent-navy); stroke-width: 2.5; transition: all 0.3s ease; }
+    .bst-node text { fill: var(--text-main); font-family: var(--font-mono); font-size: 13px; font-weight: bold; text-anchor: middle; dominant-baseline: central; }
+    .bst-edge { stroke: var(--text-muted); stroke-width: 2; transition: all 0.3s ease; }
+    .bst-node.active circle { fill: var(--accent-primary-soft); stroke: var(--accent-primary); }
+    .bst-node.active text { fill: var(--accent-primary); }
+    .bst-node.found circle { fill: var(--accent-green-soft); stroke: var(--accent-green); }
+    .bst-node.found text { fill: var(--accent-green); }
+    .bst-node.visited circle { fill: #E0E7FF; stroke: #4F46E5; }
+    .bst-node.visited text { fill: #3730A3; }
+    .inorder-array { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; min-height: 40px; padding: 0.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; }
+    .inorder-cell { padding: 0.3rem 0.6rem; background: #E0E7FF; color: #3730A3; font-family: var(--font-mono); font-weight: bold; border-radius: 4px; border: 1px solid #C7D2FE; animation: popIn 0.2s; }
+    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    svg.chart { width: 100%; max-height: 290px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; }
 
-    /* --- Sidebar & Utils --- */
-    .nav-section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin: 1rem 0 0.45rem; }
+    /* Nav Sidebar - Collapsible Details */
+    details.sidebar-group > summary { list-style: none; }
+    details.sidebar-group > summary::-webkit-details-marker { display: none; }
+    .nav-section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin: 1.2rem 0 0.6rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+    .nav-section-title:hover { color: var(--accent-primary); }
+    .nav-section-title .chevron { transition: transform 0.2s; font-size: 1rem; }
+    details.sidebar-group[open] .nav-section-title .chevron { transform: rotate(180deg); }
+    
     .nav-item { display: flex; align-items: center; justify-content: space-between; padding: 0.52rem 0.7rem; border-radius: 6px; font-size: 0.86rem; cursor: pointer; margin-bottom: 0.25rem; border: 1px solid transparent; gap: 0.4rem; }
     .nav-item:hover { background: var(--bg-subtle); }
     .nav-item.active { background: var(--accent-primary-soft); border-color: var(--accent-primary); font-weight: 700; }
@@ -106,13 +188,14 @@
     .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.9rem; margin-top: 1rem; }
     .toc-part { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
     
+    /* Quiz */
     .quiz-item { border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.85rem; background: var(--bg-card); }
     .quiz-opt { display: block; width: 100%; text-align: left; padding: 0.55rem 0.8rem; margin-top: 0.45rem; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-subtle); color: var(--text-main); cursor: pointer; font-size: 0.88rem; }
     .quiz-opt:hover { border-color: var(--accent-primary); }
     .feedback { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 6px; font-size: 0.86rem; font-weight: 500; }
     .fb-ok { background: var(--accent-green-soft); color: var(--accent-green); }
     .fb-err { background: var(--accent-red-soft); color: var(--accent-red); }
-
+    
     @media (max-width: 860px) { .app-shell { grid-template-columns: 1fr; } aside { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); } }
   </style>
 </head>
@@ -120,7 +203,7 @@
   <header>
     <div class="brand" onclick="navigate('home')">
       <div class="logo-container"><div class="cube"><div class="face front"></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div></div>
-      <span class="brand-badge">CLRS v0.9.0</span>
+      <span class="brand-badge">CLRS v0.10.2</span>
       <span class="brand-title">Algoritmus Labor</span>
     </div>
     <div class="header-actions">
@@ -128,25 +211,24 @@
       <button class="btn btn-sm" id="themeBtn" onclick="toggleTheme()">Világos mód</button>
     </div>
   </header>
-
   <div class="app-shell">
     <aside id="sidebar"></aside>
     <main id="content"></main>
   </div>
-
   <script>
-    const STATE = { view: 'home', dark: true, completed: {}, quizSolved: {} };
-
+    // --- STATE MANAGEMENT ---
+    const STATE = { view: 'home', dark: true, completed: {}, quizSolved: {}, collapsedParts: {} };
     try {
-      const saved = JSON.parse(localStorage.getItem('clrs_labor_v090'));
+      const saved = JSON.parse(localStorage.getItem('clrs_labor_full'));
       if (saved) {
         if (saved.view) STATE.view = saved.view;
         if (typeof saved.dark === 'boolean') STATE.dark = saved.dark;
         if (saved.completed) STATE.completed = saved.completed;
         if (saved.quizSolved) STATE.quizSolved = saved.quizSolved;
+        if (saved.collapsedParts) STATE.collapsedParts = saved.collapsedParts;
       }
     } catch (e) {}
-    function saveState() { try { localStorage.setItem('clrs_labor_v090', JSON.stringify(STATE)); } catch (e) {} }
+    function saveState() { try { localStorage.setItem('clrs_labor_full', JSON.stringify(STATE)); } catch (e) {} }
 
     document.body.classList.toggle('dark', STATE.dark);
     document.getElementById('themeBtn').textContent = STATE.dark ? 'Világos mód' : 'Sötét mód';
@@ -154,33 +236,54 @@
 
     const UNITS = [
       { id: '1.1', part: 'I. Rész: Alapok', title: '1.1 Algoritmusok', ready: true },
-      { id: '2.1', part: 'I. Rész: Alapok', title: '2.1 Beszúró rendezés', ready: true },
-      { id: '4.0', part: 'I. Rész: Alapok', title: '4. Mester-tétel', ready: true },
-      { id: '6.0', part: 'II. Rész: Rendezés', title: '6. Kupacrendezés', ready: true },
-      { id: '7.0', part: 'II. Rész: Rendezés', title: '7. Gyorsrendezés', ready: true },
+      { id: '1.2', part: 'I. Rész: Alapok', title: '1.2 Hardver vs. Algoritmus', ready: true },
+      { id: '2.1', part: 'I. Rész: Alapok', title: '2.1 Beszúró rendezés (Insertion)', ready: true },
+      { id: '2.2', part: 'I. Rész: Alapok', title: '2.2 Algoritmus elemzés (RAM)', ready: true },
+      { id: '2.3', part: 'I. Rész: Alapok', title: '2.3 Oszd meg és uralkodj (Merge)', ready: true },
+      { id: '3.0', part: 'I. Rész: Alapok', title: '3. Aszimptotikus jelölések', ready: true },
+      { id: '4.0', part: 'I. Rész: Alapok', title: '4. Mester-tétel kalkulátor', ready: true },
+      { id: '6.0', part: 'II. Rész: Rendezés', title: '6. Kupacrendezés (Heapsort)', ready: true },
+      { id: '7.0', part: 'II. Rész: Rendezés', title: '7. Gyorsrendezés (Quicksort)', ready: true },
       { id: '8.0', part: 'II. Rész: Rendezés', title: '8. Lineáris rendezések', ready: true },
       { id: '10.0', part: 'III. Rész: Adatszerkezetek', title: '10. Elemi adatszerkezetek', ready: true },
       { id: '11.0', part: 'III. Rész: Adatszerkezetek', title: '11. Hasítótáblák', ready: true },
-      { id: '12.0', part: 'III. Rész: Adatszerkezetek', title: '12. Bináris keresőfák [Terv]', ready: false }
+      { id: '12.0', part: 'III. Rész: Adatszerkezetek', title: '12. Bináris keresőfák', ready: true }
     ];
 
     function navigate(id) { STATE.view = id; saveState(); renderSidebar(); renderMain(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
     function markComplete(id) { STATE.completed[id] = !STATE.completed[id]; saveState(); renderSidebar(); renderMain(); }
+    
+    function togglePart(el) {
+      STATE.collapsedParts[el.dataset.part] = !el.open; // if it's open, it means it was just opened
+      saveState();
+    }
 
     function renderSidebar() {
       const doneCount = UNITS.filter(u => u.ready && STATE.completed[u.id]).length;
       const totalReady = UNITS.filter(u => u.ready).length;
       let html = `<div style="margin-bottom:1rem; padding:0.75rem; background:var(--bg-subtle); border-radius:8px;">
-          <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">HALADÁS</div>
+          <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">HALADÁS (ÖSSZES)</div>
           <div style="font-size:1.15rem; font-weight:700; margin:0.2rem 0;">${doneCount} / ${totalReady} kész</div>
           <div style="height:6px; background:var(--border); border-radius:99px; overflow:hidden;"><div style="height:100%; width:${Math.round((doneCount/totalReady)*100)}%; background:var(--accent-green);"></div></div>
         </div>
         <div class="nav-item ${STATE.view === 'home' ? 'active' : ''}" onclick="navigate('home')"><span>Nyitóoldal & Tartalom</span><span class="status-pill pill-ready">Start</span></div>`;
-      let currentPart = '';
-      for (const u of UNITS) {
-        if (u.part !== currentPart) { currentPart = u.part; html += `<div class="nav-section-title">${currentPart}</div>`; }
-        const pill = !u.ready ? '<span class="status-pill pill-soon">Terv</span>' : STATE.completed[u.id] ? '<span class="status-pill pill-done">Kész</span>' : '<span class="status-pill pill-ready">Aktív</span>';
-        html += `<div class="nav-item ${STATE.view === u.id ? 'active' : ''} ${!u.ready ? 'locked' : ''}" onclick="${u.ready ? `navigate('${u.id}')` : ''}"><span>${u.title}</span> ${pill}</div>`;
+      
+      const grouped = {};
+      UNITS.forEach(u => {
+        if(!grouped[u.part]) grouped[u.part] = [];
+        grouped[u.part].push(u);
+      });
+
+      for (const [part, units] of Object.entries(grouped)) {
+        const isOpen = STATE.collapsedParts[part] === true ? '' : 'open'; // default open if not explicitly closed
+        html += `<details class="sidebar-group" data-part="${part}" ${isOpen} ontoggle="togglePart(this)">
+          <summary class="nav-section-title">${part} <span class="chevron">▼</span></summary>
+          <div style="padding-bottom: 0.5rem;">`;
+        for (const u of units) {
+          const pill = !u.ready ? '<span class="status-pill pill-soon">Terv</span>' : STATE.completed[u.id] ? '<span class="status-pill pill-done">Kész</span>' : '<span class="status-pill pill-ready">Aktív</span>';
+          html += `<div class="nav-item ${STATE.view === u.id ? 'active' : ''} ${!u.ready ? 'locked' : ''}" onclick="${u.ready ? `navigate('${u.id}')` : ''}"><span>${u.title}</span> ${pill}</div>`;
+        }
+        html += `</div></details>`;
       }
       document.getElementById('sidebar').innerHTML = html;
     }
@@ -190,238 +293,319 @@
         <div class="book-cover-hero">
           <div class="book-cover-authors">Thomas H. Cormen • Charles E. Leiserson • Ronald L. Rivest • Clifford Stein</div>
           <h1 class="book-cover-title">ALGORITMUSOK</h1>
-          <div class="book-cover-subtitle">Harmadik kiadás (Interaktív Laboratórium)</div>
-          <button class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;" onclick="navigate('11.0')">
-            Új: 11. fejezet (Hasítótáblák) indítása →
+          <div class="book-cover-subtitle">Harmadik kiadás (Interaktív Laboratórium - Teljes Verzió)</div>
+          <button class="btn btn-primary" style="padding: 0.8rem 1.5rem; font-size: 1rem;" onclick="navigate('1.1')">
+            Vissza a kezdetekhez (1.1) →
           </button>
         </div>
-
+        <div class="section-block">
+          <span class="section-tag">Élő előnézet</span>
+          <h2>Aszimptotikus növekedési nagyságrendek (n = 1 … 64)</h2>
+          <div class="controls-row">
+            <label>Bemeneti méret (n): <strong id="homeNVal">16</strong></label>
+            <input type="range" min="4" max="64" value="16" oninput="updateHomeChart(this.value)" />
+          </div>
+          <div id="homeChartBox"></div>
+        </div>
         <h2>A könyv szerkezete</h2>
         <div class="toc-grid">
-          <div class="toc-part"><span class="status-pill pill-done">Kész</span><h3>I. Rész: Alapok</h3><p style="font-size:0.88rem; color:var(--text-muted);">Algoritmus elemzés, Θ, Mester-tétel.</p></div>
-          <div class="toc-part"><span class="status-pill pill-done">Kész</span><h3>II. Rész: Rendezés</h3><p style="font-size:0.88rem; color:var(--text-muted);">Heapsort, Quicksort, Lineáris rendezések.</p></div>
-          <div class="toc-part"><span class="status-pill pill-ready">Aktív</span><h3>III. Rész: Adatszerkezetek</h3><p style="font-size:0.88rem; color:var(--text-muted);">10. Elemi adatsz., <strong>11. Hasítótáblák (Kész)</strong>, BST.</p></div>
+          <div class="toc-part"><span class="status-pill pill-done">Aktív: 1-4.</span><h3>I. Rész: Alapok</h3><p style="font-size:0.88rem; color:var(--text-muted);">Algoritmus elemzés, Rendezések, Θ, Mester-tétel.</p></div>
+          <div class="toc-part"><span class="status-pill pill-done">Aktív: 6-8.</span><h3>II. Rész: Rendezés</h3><p style="font-size:0.88rem; color:var(--text-muted);">Heapsort, Quicksort, Lineáris rendezések.</p></div>
+          <div class="toc-part"><span class="status-pill pill-done">Aktív: 10-12.</span><h3>III. Rész: Adatszerkezetek</h3><p style="font-size:0.88rem; color:var(--text-muted);">Elemi adatsz., Hasítótáblák, BST.</p></div>
         </div>
       `;
     }
-
-    /* ==================== UNIT 11.0: HASH TABLES ==================== */
-    
-    // Hash Table (Chaining) State
-    const M_CHAIN = 7;
-    let chainTable = Array.from({length: M_CHAIN}, () => []);
-    let chLog = "Kezdeti állapot. h(k) = k mod 7.";
-    let chLastInserted = null;
-
-    function hashDiv(k, m) { return k % m; }
-
-    function opChInsert() {
-      const v = parseInt(document.getElementById('chVal').value, 10);
-      if (isNaN(v)) return;
-      const h = hashDiv(v, M_CHAIN);
-      chainTable[h].unshift(v); // Insert at head of linked list (O(1))
-      chLastInserted = { val: v, hash: h };
-      chLog = `CHAINED-HASH-INSERT(T, ${v}): h(${v}) = ${v} mod ${M_CHAIN} = ${h}. Beszúrva a T[${h}] lista elejére O(1) időben.`;
-      renderChaining();
+    function updateHomeChart(nVal) {
+      const n = parseInt(nVal, 10);
+      const box = document.getElementById('homeChartBox');
+      if (!box) return;
+      document.getElementById('homeNVal').textContent = n;
+      box.innerHTML = `<div class="var-grid"><div class="var-card"><strong>Θ(lg n):</strong> ${Math.log2(n).toFixed(2)}</div><div class="var-card"><strong>Θ(n):</strong> ${n}</div><div class="var-card" style="border-color:var(--accent-green);"><strong>Θ(n lg n):</strong> ${Math.round(n * Math.log2(n))}</div><div class="var-card" style="border-color:var(--accent-primary);"><strong>Θ(n²):</strong> ${n * n}</div></div>`;
     }
 
-    function opChSearch() {
-      const v = parseInt(document.getElementById('chVal').value, 10);
-      if (isNaN(v)) return;
-      const h = hashDiv(v, M_CHAIN);
-      const list = chainTable[h];
-      const idx = list.indexOf(v);
-      if (idx !== -1) {
-        chLog = `CHAINED-HASH-SEARCH(T, ${v}): h(${v}) = ${h}. A T[${h}] listában a(z) ${idx+1}. helyen MEGTALÁLVA.`;
-      } else {
-        chLog = `CHAINED-HASH-SEARCH(T, ${v}): h(${v}) = ${h}. A T[${h}] listában NEM TALÁLHATÓ.`;
-      }
-      chLastInserted = null;
-      renderChaining();
-    }
-
-    function renderChaining() {
-      let html = '';
-      for (let i = 0; i < M_CHAIN; i++) {
-        const list = chainTable[i];
-        let listHtml = '';
-        if (list.length === 0) {
-          listHtml = '<div style="color:var(--text-muted); font-size:0.8rem; margin-top:0.5rem;">NIL</div>';
-        } else {
-          listHtml = list.map((val, idx) => {
-            const isLast = (chLastInserted && chLastInserted.val === val && chLastInserted.hash === i && idx === 0);
-            return `<div class="ht-node ${isLast ? 'highlight' : ''}">${val}</div>${idx < list.length - 1 ? '<div class="ht-arrow">↓</div>' : ''}`;
-          }).join('');
-        }
-        html += `<div class="ht-slot"><div class="ht-index">T[${i}]</div><div class="ht-chain">${listHtml}</div></div>`;
-      }
-      document.getElementById('chainBox').innerHTML = html;
-      document.getElementById('chainLog').textContent = chLog;
-    }
-
-    // Hash Table (Open Addressing - Linear Probing) State
-    const M_OA = 10;
-    let oaTable = new Array(M_OA).fill(null);
-    let oaLog = "Kezdeti állapot. h(k, i) = (h'(k) + i) mod 10, ahol h'(k) = k mod 10.";
-    let oaSteps = []; // to highlight probing path
-
-    function hashOA(k, i) { return ( (k % M_OA) + i ) % M_OA; }
-
-    function opOaInsert() {
-      const v = parseInt(document.getElementById('oaVal').value, 10);
-      if (isNaN(v)) return;
-      oaSteps = [];
-      let i = 0;
-      while (i < M_OA) {
-        const j = hashOA(v, i);
-        oaSteps.push(j);
-        if (oaTable[j] === null) {
-          oaTable[j] = v;
-          oaLog = `HASH-INSERT(T, ${v}): Próbák száma: ${i+1}. Bekerült a T[${j}] indexre.`;
-          renderOA();
-          return;
-        }
-        i++;
-      }
-      oaLog = `HASH-INSERT(T, ${v}): Hiba! A hasítótábla betelt (Overflow).`;
-      renderOA();
-    }
-
-    function renderOA() {
-      let html = '';
-      for (let i = 0; i < M_OA; i++) {
-        const val = oaTable[i];
-        let cls = 'oa-cell';
-        if (val !== null) cls += ' filled';
-        
-        // Highlight probing path
-        if (oaSteps.length > 0) {
-          const finalPos = oaSteps[oaSteps.length - 1];
-          if (i === finalPos && oaTable[i] !== null) {
-            cls += ' highlight'; // Successful insert
-          } else if (oaSteps.includes(i) && i !== finalPos) {
-            cls += ' collision'; // Collision happened here
-          }
-        }
-
-        html += `<div style="display:flex; flex-direction:column; align-items:center; gap:0.2rem;">
-          <div style="font-size:0.7rem; color:var(--text-muted); font-family:var(--font-mono);">T[${i}]</div>
-          <div class="${cls}">${val !== null ? val : ''}</div>
-        </div>`;
-      }
-      document.getElementById('oaBox').innerHTML = html;
-      document.getElementById('oaLog').textContent = oaLog;
-    }
-
-
-    function renderUnit110() {
-      return unitShell('11.0', '11. Hasítótáblák (Hash Tables)', 'III. Rész • 11. fejezet', `
+    // --- UNIT 1.1 ---
+    function renderUnit11() {
+      return unitShell('1.1', '1.1 Algoritmusok', 'I. Rész • 1. fejezet', `
         <div class="section-block">
-          <span class="section-tag">A–C. Közvetlen címzés vs. Hasítás (Hashing)</span>
-          <p>Ha a lehetséges kulcsok $U$ univerzuma kicsi, használhatunk <strong>közvetlen címzésű táblát</strong>, ahol a $k$ kulcsú elem a $T[k]$ pozícióba kerül ($O(1)$). Ha viszont $U$ nagyon nagy, de a ténylegesen tárolt kulcsok $K$ halmaza kicsi, a közvetlen címzés rengeteg memóriát pazarolna.</p>
-          <p>A <strong>hasítótábla (Hash Table)</strong> memóriaigénye $\\Theta(|K|)$. Egy $h(k)$ <em>hasítófüggvény</em> (hash function) segítségével a $k$ kulcsot egy kisebb, $0 \\dots m-1$ méretű $T$ táblába képezzük le. Konfliktus (ütközés/collision) akkor lép fel, ha két különböző kulcs ugyanarra a pozícióra hasít ($h(k_1) = h(k_2)$).</p>
+          <h3>Mi az algoritmus és mi a számítási probléma?</h3>
+          <p>Informálisan az <strong>algoritmus</strong> bármely jól definiált számítási eljárás...
+          <div class="math-box"><strong>Rendezési probléma:</strong> Bemenet: &langle;a₁, …, aₙ&rangle;. Kimenet: Permutáció, ahol a'₁ ≤ a'₂ ≤ … ≤ a'ₙ.</div>
         </div>
-
         <div class="section-block">
-          <span class="section-tag">D. Ütközésfeloldás: Láncolás (Chaining) Interaktív Labor</span>
-          <div class="math-box">
-            Láncolás esetén a tábla minden $T[j]$ eleme egy láncolt listára mutat. 
-            Beszúrás: az új elem a lista <em>elejére</em> kerül ($O(1)$).<br/>
-            Legyen az osztó $m = 7$, és a hasítófüggvény <strong>$h(k) = k \\bmod 7$</strong>.
-          </div>
+          <span class="section-tag">Interaktív Problémapéldány-ellenőrző</span>
           <div class="lab-panel">
             <div class="controls-row">
-              <input type="number" id="chVal" value="15" style="width:80px;" placeholder="Kulcs" />
-              <button class="btn btn-primary" onclick="opChInsert()">CHAINED-HASH-INSERT</button>
-              <button class="btn" onclick="opChSearch()">CHAINED-HASH-SEARCH</button>
+              <input type="text" id="u11In" value="31, 41, 59, 26, 41" /><input type="text" id="u11Out" value="26, 31, 41, 41, 59" />
+              <button class="btn btn-primary" onclick="check11()">Ellenőrzés</button>
             </div>
-            <div id="chainLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
-            <div id="chainBox" class="ht-container"></div>
+            <div id="u11Res"></div>
           </div>
         </div>
-
-        <div class="section-block">
-          <span class="section-tag">E. Ütközésfeloldás: Nyílt címzés (Open Addressing) Labor</span>
-          <div class="math-box">
-            A nyílt címzésnél minden elemet magában a táblában tárolunk (nincsenek listák). Ha a kiszámított hely foglalt, szisztematikusan új helyet keresünk (próbák).<br/>
-            <strong>Lineáris próbálás (Linear Probing):</strong> $h(k, i) = (h'(k) + i) \\bmod m$, ahol $i=0, 1, \\dots, m-1$. (Az alapértelmezett hash: $h'(k) = k \\bmod 10$).<br/>
-            <span style="font-size:0.85rem; color:var(--text-muted);">A próbák útvonala: <span style="color:var(--accent-red);font-weight:bold;">piros = ütközés</span>, <span style="color:var(--accent-green);font-weight:bold;">zöld = sikeres beszúrás</span>.</span>
-          </div>
-          <div class="lab-panel">
-            <div class="controls-row">
-              <input type="number" id="oaVal" value="25" style="width:80px;" placeholder="Kulcs" />
-              <button class="btn btn-primary" onclick="opOaInsert()">HASH-INSERT (Linear Probing)</button>
-            </div>
-            <div id="oaLog" class="feedback fb-ok" style="margin-bottom:1rem;"></div>
-            <div id="oaBox" style="display:flex; gap:0.5rem; overflow-x:auto; padding:1rem 0;"></div>
-          </div>
-        </div>
-
-        <div class="section-block">
-          <span class="section-tag">F. Hatékonyság és Teljesítési Tényező (Load Factor)</span>
-          <p>A hasítótábla teljesítménye az <strong>$\\alpha = n / m$</strong> (teljesítési tényező) értékétől függ, ahol $n$ az elemek, $m$ a táblaméret (slotok) száma.</p>
-          <ul>
-            <li><strong>Láncolásnál:</strong> Egy sikertelen keresés várható ideje $\\Theta(1 + \\alpha)$, mert átlagosan $\\alpha$ hosszúságú listát kell átnézni.</li>
-            <li><strong>Nyílt címzésnél:</strong> $\\alpha$ szigorúan $\\le 1$ lehet. Egy sikertelen keresés (vagy beszúrás) várható próbáinak száma legfeljebb $1 / (1 - \\alpha)$ az egyenletes hasítás feltételezése mellett. Ha a tábla betelik, újra kell méretezni (rehashing).</li>
-          </ul>
-        </div>
-      `, [
-        {
-          q: '1. Mi történik a láncolt hasítótábla (Chaining) beszúrási műveleténél a CLRS definíciója szerint?',
-          opts: [
-            'Az új elem a lista végére kerül O(n) időben.',
-            'Az új elem a lista elejére (head) kerül O(1) időben (feltéve, hogy a kulcs még nincs a listában, vagy megengedjük a duplikátumokat).'
-          ],
-          ans: 1,
-          exp: 'A CLRS szerint a beszúrás a láncolt lista elejére történik O(1) időben, ami jelentősen felgyorsítja a műveletet.'
-        },
-        {
-          q: '2. Milyen problémát okoz a lineáris próbálás (Linear Probing) a nyílt címzésnél?',
-          opts: [
-            'Az elsődleges csomósodást (primary clustering): a foglalt helyek hosszú, folytonos blokkokká állnak össze, növelve az átlagos keresési időt.',
-            'Végtelen ciklust okoz, ha a tábla félig üres.'
-          ],
-          ans: 0,
-          exp: 'A lineáris próbálás legnagyobb hátránya az elsődleges csomósodás, ahol a blokkok egyre nagyobbak lesznek, mert bármely üres helyre eső próba a blokk végére fűzi az új elemet.'
-        }
-      ]);
+      `, []);
+    }
+    function check11() {
+      const p = s => s.split(',').map(x=>Number(x.trim())).filter(x=>!Number.isNaN(x));
+      const a = p(document.getElementById('u11In').value), b = p(document.getElementById('u11Out').value);
+      const isPerm = a.length === b.length && [...a].sort().every((v,i) => v === [...b].sort()[i]);
+      const isOrdered = b.every((v, i) => i === 0 || b[i-1] <= v);
+      const ok = isPerm && isOrdered && a.length > 0;
+      document.getElementById('u11Res').innerHTML = `<div class="feedback ${ok ? 'fb-ok' : 'fb-err'}">${ok ? 'ÉRVÉNYES KIMENET' : 'HIBÁS KIMENET'}</div>`;
     }
 
-    /* ==================== EGYSÉG VÁZ (Shared) ==================== */
-    function unitShell(id, title, subtitle, bodyHtml, quizzes) {
-      const u = UNITS.find(x => x.id === id);
-      const isDone = !!STATE.completed[id];
-      const quizHtml = quizzes.map((q, idx) => {
-        const key = `${id}_${idx}`;
-        const picked = STATE.quizSolved[key];
-        return `<div class="quiz-item"><strong>${q.q}</strong>
-            ${q.opts.map((opt, oi) => `<button class="quiz-opt" onclick="answerQuiz('${id}', ${idx}, ${oi}, ${q.ans})">${opt}</button>`).join('')}
-            ${picked !== undefined ? `<div class="feedback ${picked === q.ans ? 'fb-ok' : 'fb-err'}">${picked === q.ans ? 'Helyes válasz! ' : 'Nem pontos. '}${q.exp}</div>` : ''}
-          </div>`;
+    // --- UNIT 1.2 ---
+    function renderUnit12() {
+      return unitShell('1.2', '1.2 Hardver vs. Algoritmus', 'I. Rész • 1. fejezet', `
+        <div class="section-block">
+          <div class="math-box"><strong>„A” gép:</strong> 10¹⁰ utasítás/mp, de Θ(n²) rendezés (2n² utasítás).<br/><strong>„B” gép (1000× lassabb):</strong> 10⁷ utasítás/mp, de Θ(n lg n) rendezés (50 n lg n utasítás).</div>
+        </div>
+        <div class="section-block">
+          <div class="lab-panel">
+            <div class="controls-row"><label>n: <strong id="u12NLabel">10 000 000</strong></label><input type="range" min="4" max="8" step="0.5" value="7" oninput="update12(this.value)" /></div>
+            <div id="u12Output"></div>
+          </div>
+        </div>
+      `, []);
+    }
+    function update12(v) {
+      const n = Math.round(Math.pow(10, parseFloat(v)));
+      if(document.getElementById('u12NLabel')) document.getElementById('u12NLabel').textContent = n.toLocaleString('hu-HU');
+      const tA = (2*n*n)/1e10, tB = (50*n*Math.log2(n))/1e7;
+      if(document.getElementById('u12Output')) document.getElementById('u12Output').innerHTML = `<div class="var-grid"><div class="var-card" style="border-color:var(--accent-primary);"><strong>A (2n²):</strong> ${tA.toFixed(2)}s</div><div class="var-card" style="border-color:var(--accent-green);"><strong>B (50 n lg n):</strong> ${tB.toFixed(2)}s</div><div class="var-card"><strong>Gyorsulás:</strong> ${(tA/tB).toFixed(1)}× B nyer!</div></div>`;
+    }
+
+    // --- UNIT 2.1 ---
+    let IS_STEPS = [], IS_IDX = 0;
+    function buildInsertionSteps(A) {
+      const steps=[], n=A.length; steps.push({arr:[...A],j:2,i:null,key:null,line:1});
+      for(let j=2; j<=n; j++) {
+        const key=A[j-1]; steps.push({arr:[...A],j,i:null,key,line:2});
+        let i=j-1; steps.push({arr:[...A],j,i,key,line:4});
+        while(i>0 && A[i-1]>key) { steps.push({arr:[...A],j,i,key,line:5}); A[i]=A[i-1]; steps.push({arr:[...A],j,i,key,line:6}); i--; }
+        A[i]=key; steps.push({arr:[...A],j,i,key,line:8});
+      }
+      steps.push({arr:[...A],j:n+1,i:null,key:null,line:1}); return steps;
+    }
+    function renderUnit21() {
+      return unitShell('2.1', '2.1 Beszúró rendezés (Insertion Sort)', 'I. Rész • 2. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel">
+            <div class="controls-row"><input type="text" id="isInput" value="5, 2, 4, 6, 1, 3" /><button class="btn btn-primary" onclick="initIS()">Futtat</button><button class="btn" onclick="stepIS(-1)">←</button><button class="btn" onclick="stepIS(1)">→</button><span id="isCounter"></span></div>
+            <div id="isBars" class="array-bars"></div><div id="isVars" class="var-grid"></div>
+            <div class="pseudocode" id="isCode">
+              <div class="code-line" data-line="1"><span class="line-no">1</span><span>for j = 2 to A.length</span></div><div class="code-line" data-line="2"><span class="line-no">2</span><span>  key = A[j]</span></div><div class="code-line" data-line="4"><span class="line-no">4</span><span>  i = j - 1</span></div><div class="code-line" data-line="5"><span class="line-no">5</span><span>  while i > 0 and A[i] > key</span></div><div class="code-line" data-line="6"><span class="line-no">6</span><span>    A[i+1] = A[i]</span></div><div class="code-line" data-line="8"><span class="line-no">8</span><span>  A[i+1] = key</span></div>
+            </div>
+          </div>
+        </div>
+      `, []);
+    }
+    function initIS() { const a=document.getElementById('isInput').value.split(',').map(x=>Number(x)); IS_STEPS=buildInsertionSteps(a); IS_IDX=0; renderISStep(); }
+    function stepIS(d) { IS_IDX = Math.max(0, Math.min(IS_STEPS.length-1, IS_IDX+d)); renderISStep(); }
+    function renderISStep() {
+      const s=IS_STEPS[IS_IDX], m=Math.max(...s.arr,1);
+      document.getElementById('isCounter').textContent=`${IS_IDX+1}/${IS_STEPS.length}`;
+      document.getElementById('isBars').innerHTML=s.arr.map((v,idx)=>{
+        let c='bar-rect'; if(idx+1===s.j) c+=' bar-key'; else if(idx+1===s.i) c+=' bar-compare'; else if(idx+1<s.j) c+=' bar-sorted';
+        return `<div class="bar-col"><div class="${c}" style="height:${Math.max(20,v/m*120)}px">${v}</div></div>`;
       }).join('');
-
-      return `<div class="hero-card" style="padding:1.5rem;">
-          <div class="book-meta">${subtitle}</div><h1 style="margin-bottom:0.35rem;">${title}</h1>
-          <div style="font-size:0.86rem; color:var(--text-muted);"><strong>Szükséges előismeretek:</strong> ${u ? u.prereq : 'Nincs'}</div>
-        </div>
-        ${bodyHtml}
-        <div class="section-block"><span class="section-tag">Ellenőrző kérdések</span>${quizHtml}
-          <div class="controls-row" style="margin-top:1rem; margin-bottom:0; justify-content:space-between;">
-            <button class="btn ${isDone ? '' : 'btn-primary'}" onclick="markComplete('${id}')">${isDone ? '✓ Teljesítve' : 'Egység megjelölése teljesítettként'}</button>
-            <button class="btn" onclick="navigate('home')">Vissza a tartalomjegyzékhez</button>
-          </div>
-        </div>`;
+      document.getElementById('isVars').innerHTML=`<div class="var-card">j: ${s.j}</div><div class="var-card">i: ${s.i}</div><div class="var-card">key: ${s.key}</div>`;
+      document.querySelectorAll('#isCode .code-line').forEach(el=>el.classList.toggle('active-line', Number(el.dataset.line)===s.line));
     }
 
-    function answerQuiz(unitId, qIdx, choice, correct) { STATE.quizSolved[`${unitId}_${qIdx}`] = choice; saveState(); renderMain(); }
+    // --- UNIT 2.2 ---
+    function renderUnit22() {
+      return unitShell('2.2', '2.2 Algoritmusok elemzése (RAM)', 'I. Rész • 2. fejezet', `
+        <div class="section-block">
+          <div class="math-box">Legjobb eset (rendezett tömb): Θ(n). Legrosszabb eset (fordított tömb): Θ(n²).</div>
+          <div class="lab-panel">
+            <div class="controls-row"><label>n: <strong id="u22NVal">20</strong></label><input type="range" min="5" max="100" value="20" oninput="update22(this.value)" /></div>
+            <div id="u22Out"></div>
+          </div>
+        </div>
+      `, []);
+    }
+    function update22(n) { n=Number(n); if(document.getElementById('u22NVal')) document.getElementById('u22NVal').textContent = n; if(document.getElementById('u22Out')) document.getElementById('u22Out').innerHTML = `<div class="var-grid"><div class="var-card" style="border-color:var(--accent-green);">Legjobb: ${5*n-4} lépés Θ(n)</div><div class="var-card" style="border-color:var(--accent-primary);">Legrosszabb: ${1.5*n*n+3.5*n-4} lépés Θ(n²)</div></div>`; }
 
+    // --- UNIT 2.3 ---
+    let MS_STEPS=[], MS_IDX=0;
+    function buildMergeSortSteps(A) {
+      const steps=[]; function r(a, p, rr, d) {
+        steps.push({sub:[...a], p, r:rr, phase:'Divide'});
+        if(p<rr) {
+          const q=Math.floor((p+rr)/2), m=q-p+1, L=r(a.slice(0,m), p, q, d+1), R=r(a.slice(m), q+1, rr, d+1), res=[];
+          let i=0, j=0; while(i<L.length && j<R.length) { if(L[i]<=R[j]) res.push(L[i++]); else res.push(R[j++]); }
+          while(i<L.length) res.push(L[i++]); while(j<R.length) res.push(R[j++]);
+          steps.push({sub:[...res], p, r:rr, phase:'MERGE'}); return res;
+        } return a;
+      }
+      r(A, 1, A.length, 0); return steps;
+    }
+    function renderUnit23() {
+      return unitShell('2.3', '2.3 Oszd meg és uralkodj (Merge Sort)', 'I. Rész • 2. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel">
+            <div class="controls-row"><input type="text" id="msInput" value="38, 27, 43, 3, 9" /><button class="btn btn-primary" onclick="initMS()">Futtat</button><button class="btn" onclick="stepMS(-1)">←</button><button class="btn" onclick="stepMS(1)">→</button><span id="msCounter"></span></div>
+            <div id="msDisplay"></div>
+          </div>
+        </div>
+      `, []);
+    }
+    function initMS() { const a=document.getElementById('msInput').value.split(',').map(x=>Number(x)); MS_STEPS=buildMergeSortSteps(a); MS_IDX=0; renderMSStep(); }
+    function stepMS(d) { MS_IDX = Math.max(0, Math.min(MS_STEPS.length-1, MS_IDX+d)); renderMSStep(); }
+    function renderMSStep() { const s=MS_STEPS[MS_IDX]; document.getElementById('msCounter').textContent=`${MS_IDX+1}/${MS_STEPS.length}`; document.getElementById('msDisplay').innerHTML=`<div class="var-grid"><div class="var-card">Fázis: ${s.phase}</div><div class="var-card">A[${s.p}..${s.r}]</div></div><div class="math-box">Rész: [${s.sub.join(', ')}]</div>`; }
+
+    // --- UNIT 3.0 ---
+    function renderUnit30() {
+      return unitShell('3.0', '3. Aszimptotikus jelölések', 'I. Rész • 3. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel">
+            <div class="controls-row"><label>c₁: <span id="c1Val">0.25</span></label><input type="range" min="0.05" max="0.6" step="0.05" value="0.25" id="c1S" oninput="update30()"/> <label>c₂: <span id="c2Val">0.5</span></label><input type="range" min="0.4" max="1.2" step="0.05" value="0.5" id="c2S" oninput="update30()"/></div>
+            <svg id="u30Svg" class="chart" viewBox="0 0 600 250"></svg>
+          </div>
+        </div>
+      `, []);
+    }
+    function update30() {
+      const c1=Number(document.getElementById('c1S').value), c2=Number(document.getElementById('c2S').value);
+      if(document.getElementById('c1Val')) document.getElementById('c1Val').textContent=c1.toFixed(2);
+      if(document.getElementById('c2Val')) document.getElementById('c2Val').textContent=c2.toFixed(2);
+      const toX=n=>45+(n/30)*530, toY=y=>220-(Math.max(0,y)/450)*190;
+      let pf=[], p1=[], p2=[]; for(let n=1;n<=30;n++){ pf.push(`${toX(n)},${toY(0.5*n*n-3*n)}`); p1.push(`${toX(n)},${toY(c1*n*n)}`); p2.push(`${toX(n)},${toY(c2*n*n)}`); }
+      if(document.getElementById('u30Svg')) document.getElementById('u30Svg').innerHTML=`<polyline fill="none" stroke="#1E3A8A" stroke-width="2" points="${p2.join(' ')}" /><polyline fill="none" stroke="#B45309" stroke-width="2.5" points="${pf.join(' ')}" /><polyline fill="none" stroke="#047857" stroke-width="2" points="${p1.join(' ')}" />`;
+    }
+
+    // --- UNIT 4.0 ---
+    function renderUnit40() {
+      return unitShell('4.0', '4. Mester-tétel Kalkulátor', 'I. Rész • 4. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel">
+            <div class="controls-row"><label>a: <strong id="mAVal">2</strong></label><input type="range" min="1" max="8" value="2" id="mA" oninput="update40()"/> <label>b: <strong id="mBVal">2</strong></label><input type="range" min="2" max="4" value="2" id="mB" oninput="update40()"/> <label>d: <strong id="mDVal">1</strong></label><input type="range" min="0" max="3" value="1" id="mD" oninput="update40()"/></div>
+            <div id="u40Out"></div>
+          </div>
+        </div>
+      `, []);
+    }
+    function update40() {
+      const a=Number(document.getElementById('mA').value), b=Number(document.getElementById('mB').value), d=Number(document.getElementById('mD').value);
+      if(document.getElementById('mAVal')) document.getElementById('mAVal').textContent=a; if(document.getElementById('mBVal')) document.getElementById('mBVal').textContent=b; if(document.getElementById('mDVal')) document.getElementById('mDVal').textContent=d;
+      const crit = Math.log(a)/Math.log(b); let th='';
+      if(Math.abs(crit-d)<0.02) th = d===0?'Θ(lg n)':`Θ(n^${d} lg n)`; else if(crit>d) th = `Θ(n^${crit.toFixed(2)})`; else th = `Θ(n^${d})`;
+      if(document.getElementById('u40Out')) document.getElementById('u40Out').innerHTML=`<div class="var-grid"><div class="var-card">log_b(a) = ${crit.toFixed(2)}</div><div class="var-card" style="border-color:var(--accent-green);">Megoldás: ${th}</div></div>`;
+    }
+
+    // --- UNIT 6.0 ---
+    function renderUnit60() {
+      return unitShell('6.0', '6. Kupacrendezés (Heapsort)', 'II. Rész • 6. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel"><div class="controls-row"><button class="btn btn-primary" onclick="pqExtractMax()">HEAP-EXTRACT-MAX(A)</button><input type="number" id="pqInsertVal" value="15" style="width:70px;"/><button class="btn" onclick="pqInsert()">MAX-HEAP-INSERT</button><button class="btn btn-sm" onclick="pqReset()">Reset</button></div><div id="pqStatus" class="feedback fb-ok"></div><div id="pqArrayBox" class="heap-strip"></div></div>
+        </div>
+      `, []);
+    }
+    let PQ_ARRAY=[16,14,10,8,7,9,3,2,4,1];
+    function pqMaxHeapify(A,i) { const n=A.length; while(true){ let l=2*i, r=2*i+1, lg=i; if(l<=n && A[l-1]>A[lg-1])lg=l; if(r<=n && A[r-1]>A[lg-1])lg=r; if(lg!==i){ let t=A[i-1]; A[i-1]=A[lg-1]; A[lg-1]=t; i=lg; }else break; } }
+    function pqExtractMax() { if(!PQ_ARRAY.length)return; const l=PQ_ARRAY.pop(); if(PQ_ARRAY.length){ PQ_ARRAY[0]=l; pqMaxHeapify(PQ_ARRAY,1); } document.getElementById('pqStatus').textContent='Kivettük a maximumot, helyreállítva.'; renderPQ(); }
+    function pqInsert() { const v=Number(document.getElementById('pqInsertVal').value); PQ_ARRAY.push(v); let i=PQ_ARRAY.length; while(i>1 && PQ_ARRAY[Math.floor(i/2)-1]<PQ_ARRAY[i-1]){ let p=Math.floor(i/2), t=PQ_ARRAY[p-1]; PQ_ARRAY[p-1]=PQ_ARRAY[i-1]; PQ_ARRAY[i-1]=t; i=p; } document.getElementById('pqStatus').textContent='Beszúrva a végére, felbuborékoltatva.'; renderPQ(); }
+    function pqReset() { PQ_ARRAY=[16,14,10,8,7,9,3,2,4,1]; renderPQ(); }
+    function renderPQ() { if(document.getElementById('pqArrayBox')) document.getElementById('pqArrayBox').innerHTML = PQ_ARRAY.map((v,i)=>`<div class="heap-cell"><div>A[${i+1}]</div><strong>${v}</strong></div>`).join(''); }
+
+    // --- UNIT 7.0 ---
+    let QS_STEPS=[], QS_IDX=0;
+    function buildQuicksortSteps(A) {
+      const steps=[]; function p(start, end) {
+        const x=A[end-1]; let i=start-1;
+        for(let j=start; j<=end-1; j++) { if(A[j-1]<=x) { i++; let t=A[i-1]; A[i-1]=A[j-1]; A[j-1]=t; steps.push({arr:[...A], p:start, r:end, i, pivot:x}); } }
+        let t=A[i]; A[i]=A[end-1]; A[end-1]=t; steps.push({arr:[...A], p:start, r:end, i:i+1, pivot:x}); return i+1;
+      }
+      function q(start, end) { if(start<end) { const pivot = p(start, end); q(start, pivot-1); q(pivot+1, end); } }
+      q(1, A.length); return steps;
+    }
+    function renderUnit70() {
+      return unitShell('7.0', '7. Gyorsrendezés (Quicksort - PARTITION)', 'II. Rész • 7. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel">
+            <div class="controls-row"><input type="text" id="qsInput" value="2, 8, 7, 1, 3, 5" /><button class="btn btn-primary" onclick="initQS()">Futtat</button><button class="btn" onclick="stepQS(-1)">←</button><button class="btn" onclick="stepQS(1)">→</button></div>
+            <div id="qsBars" class="array-bars"></div><div id="qsVars" class="var-grid"></div>
+          </div>
+        </div>
+      `, []);
+    }
+    function initQS() { const a=document.getElementById('qsInput').value.split(',').map(x=>Number(x)); QS_STEPS=buildQuicksortSteps(a); QS_IDX=0; renderQSStep(); }
+    function stepQS(d) { QS_IDX = Math.max(0, Math.min(QS_STEPS.length-1, QS_IDX+d)); renderQSStep(); }
+    function renderQSStep() { const s=QS_STEPS[QS_IDX], m=Math.max(...s.arr,1); if(document.getElementById('qsBars')) document.getElementById('qsBars').innerHTML=s.arr.map((v,i)=>`<div class="bar-col"><div class="bar-rect" style="height:${Math.max(20,v/m*120)}px">${v}</div></div>`).join(''); if(document.getElementById('qsVars')) document.getElementById('qsVars').innerHTML=`<div class="var-card">A[${s.p}..${s.r}]</div><div class="var-card">Pivot: ${s.pivot}</div>`; }
+
+    // --- UNIT 8.0 ---
+    function renderUnit80() {
+      return unitShell('8.0', '8. Lineáris rendezések (Counting Sort)', 'II. Rész • 8. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel"><div class="controls-row"><button class="btn btn-primary" onclick="runCS()">Szimuláció (A -> C -> B)</button></div><div id="csOutput" class="cs-array-box"></div></div>
+        </div>
+      `, []);
+    }
+    function runCS() {
+      const A=[2,5,3,0,2,3,0,3], C=new Array(6).fill(0), B=new Array(A.length);
+      for(let x of A) C[x]++; for(let i=1;i<=5;i++) C[i]+=C[i-1]; for(let i=A.length-1;i>=0;i--){ B[C[A[i]]-1]=A[i]; C[A[i]]--; }
+      if(document.getElementById('csOutput')) document.getElementById('csOutput').innerHTML = `<strong>A: </strong> ${A.join(', ')} <br/> <strong>B (Kész): </strong> ${B.join(', ')}`;
+    }
+
+    // --- UNIT 10.0 ---
+    let S_TOP = 0, S_ARR = new Array(5).fill(null);
+    function opPsh() { if(S_TOP<5){ S_ARR[S_TOP++]=15; renderUnit100DS(); } }
+    function opPp() { if(S_TOP>0){ S_ARR[--S_TOP]=null; renderUnit100DS(); } }
+    function renderUnit100DS() { if(document.getElementById('stckBox')) document.getElementById('stckBox').innerHTML = S_ARR.map((v,i)=>`<div class="ds-cell ${v? 'active-top':''}">${v||''}</div>`).join(''); }
+    function renderUnit100() {
+      return unitShell('10.0', '10. Elemi adatszerkezetek (Stack, Queue, List)', 'III. Rész • 10. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel"><div class="controls-row"><button class="btn btn-primary" onclick="opPsh()">PUSH</button><button class="btn" onclick="opPp()">POP</button></div><div id="stckBox" class="ds-array-box"></div></div>
+        </div>
+      `, []);
+    }
+
+    // --- UNIT 11.0 ---
+    let HT_OA = new Array(7).fill(null);
+    function opOaIns() { let v=Math.floor(Math.random()*100); for(let i=0;i<7;i++){let j=(v%7+i)%7; if(HT_OA[j]===null){HT_OA[j]=v; break;}} renderUnit110DS(); }
+    function renderUnit110DS() { if(document.getElementById('oaBx')) document.getElementById('oaBx').innerHTML = HT_OA.map((v,i)=>`<div class="oa-cell ${v?'filled':''}">${v||''}</div>`).join(''); }
+    function renderUnit110() {
+      return unitShell('11.0', '11. Hasítótáblák', 'III. Rész • 11. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel"><div class="controls-row"><button class="btn btn-primary" onclick="opOaIns()">HASH-INSERT (Linear Probing)</button><button class="btn btn-sm" onclick="HT_OA=new Array(7).fill(null); renderUnit110DS();">Reset</button></div><div id="oaBx" style="display:flex;gap:0.5rem;padding:1rem 0;"></div></div>
+        </div>
+      `, []);
+    }
+
+    // --- UNIT 12.0 ---
+    function renderUnit120() {
+      return unitShell('12.0', '12. Bináris keresőfák', 'III. Rész • 12. fejezet', `
+        <div class="section-block">
+          <div class="lab-panel"><svg id="bstSvg" class="bst-chart"></svg></div>
+        </div>
+      `, []);
+    }
+    function initDefaultBST() {
+      if(document.getElementById('bstSvg')) document.getElementById('bstSvg').innerHTML = `<g class="bst-node active"><circle cx="400" cy="50" r="16"/><text x="400" y="50">15</text></g><line class="bst-edge" x1="400" y1="50" x2="250" y2="100"/><g class="bst-node"><circle cx="250" cy="100" r="16"/><text x="250" y="100">6</text></g><line class="bst-edge" x1="400" y1="50" x2="550" y2="100"/><g class="bst-node"><circle cx="550" cy="100" r="16"/><text x="550" y="100">18</text></g>`;
+    }
+
+    // --- SHARED UTILS ---
+    function unitShell(id, title, subtitle, bodyHtml, quizzes) {
+      return `<div class="hero-card" style="padding:1.5rem;"><div class="book-meta">${subtitle}</div><h1 style="margin-bottom:0.35rem;">${title}</h1></div>${bodyHtml}`;
+    }
+
+    // --- MAIN ROUTER ---
     function renderMain() {
       const el = document.getElementById('content');
-      if (STATE.view === 'home') { el.innerHTML = renderHome(); } 
-      else if (STATE.view === '11.0') { el.innerHTML = renderUnit110(); renderChaining(); renderOA(); } 
-      else {
-        el.innerHTML = `<div class="hero-card"><h1>Régebbi fejezetek...</h1><p>Válassz a menüből a megjelenítéshez (jelenleg a 11. fejezet az aktív demonstráció).</p></div>`;
-      }
+      if (STATE.view === 'home') { el.innerHTML = renderHome(); updateHomeChart(16); }
+      else if (STATE.view === '1.1') { el.innerHTML = renderUnit11(); }
+      else if (STATE.view === '1.2') { el.innerHTML = renderUnit12(); update12(7); }
+      else if (STATE.view === '2.1') { el.innerHTML = renderUnit21(); initIS(); }
+      else if (STATE.view === '2.2') { el.innerHTML = renderUnit22(); update22(20); }
+      else if (STATE.view === '2.3') { el.innerHTML = renderUnit23(); initMS(); }
+      else if (STATE.view === '3.0') { el.innerHTML = renderUnit30(); update30(); }
+      else if (STATE.view === '4.0') { el.innerHTML = renderUnit40(); update40(); }
+      else if (STATE.view === '6.0') { el.innerHTML = renderUnit60(); renderPQ(); }
+      else if (STATE.view === '7.0') { el.innerHTML = renderUnit70(); initQS(); }
+      else if (STATE.view === '8.0') { el.innerHTML = renderUnit80(); runCS(); }
+      else if (STATE.view === '10.0') { el.innerHTML = renderUnit100(); renderUnit100DS(); }
+      else if (STATE.view === '11.0') { el.innerHTML = renderUnit110(); renderUnit110DS(); }
+      else if (STATE.view === '12.0') { el.innerHTML = renderUnit120(); initDefaultBST(); }
+      else { el.innerHTML = renderHome(); updateHomeChart(16); }
     }
 
     renderSidebar();
