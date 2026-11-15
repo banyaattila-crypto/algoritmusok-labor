@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLRS Algoritmus Labor — v0.5.0 (I. Rész + II. Rész: 6. fejezet Kupacrendezés)</title>
+  <style>
+    :root {
+      --bg-page: #FAF8F5;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F3EFEA;
+      --bg-code: #1E293B;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --text-code: #F8FAFC;
+      --border: #E2DCD3;
+      --accent-primary: #B45309;
+      --accent-primary-soft: #FEF3C7;
+      --accent-navy: #1E3A8A;
+      --accent-navy-soft: #DBEAFE;
+      --accent-green: #047857;
+      --accent-green-soft: #D1FAE5;
+      --accent-red: #B91C1C;
+      --accent-red-soft: #FEE2E2;
+      --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+      --font-serif: Georgia, "Times New Roman", serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    body.dark {
+      --bg-page: #0B1120;
+      --bg-card: #111827;
+      --bg-subtle: #1E293B;
+      --bg-code: #020617;
+      --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --text-code: #E2E8F0;
+      --border: #334155;
+      --accent-primary: #F59E0B;
+      --accent-primary-soft: rgba(245, 158, 11, 0.16);
+      --accent-navy: #60A5FA;
+      --accent-navy-soft: rgba(96, 165, 250, 0.16);
+      --accent-green: #34D399;
+      --accent-green-soft: rgba(52, 211, 153, 0.16);
+      --accent-red: #F87171;
+      --accent-red-soft: rgba(248, 113, 113, 0.16);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.65;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+    .brand-badge {
+      background: var(--accent-primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .brand-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      padding: 0.42rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn:hover { border-color: var(--accent-primary); }
+    .btn-primary {
+      background: var(--accent-primary);
+      color: #fff;
+      border-color: var(--accent-primary);
+    }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.8rem; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Layout */
+    .app-shell {
+      display: grid;
+      grid-template-columns: 295px 1fr;
+      min-height: calc(100vh - 57px);
+    }
+    aside {
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 57px);
+      position: sticky;
+      top: 57px;
+    }
+    main {
+      padding: 2rem clamp(1rem, 4vw, 3rem);
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Sidebar Navigation */
+    .nav-section-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin: 1rem 0 0.45rem;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.52rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      cursor: pointer;
+      margin-bottom: 0.25rem;
+      border: 1px solid transparent;
+      gap: 0.4rem;
+    }
+    .nav-item:hover { background: var(--bg-subtle); }
+    .nav-item.active {
+      background: var(--accent-primary-soft);
+      border-color: var(--accent-primary);
+      font-weight: 700;
+    }
+    .nav-item.locked {
+      opacity: 0.55;
+      cursor: default;
+    }
+    .status-pill {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.42rem;
+      border-radius: 99px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .pill-done { background: var(--accent-green-soft); color: var(--accent-green); }
+    .pill-ready { background: var(--accent-navy-soft); color: var(--accent-navy); }
+    .pill-soon { background: var(--bg-subtle); color: var(--text-muted); }
+
+    /* Cards & Typography */
+    .hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--accent-primary);
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+    .book-meta {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--accent-primary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.7rem, 3.2vw, 2.35rem);
+      line-height: 1.22;
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      margin: 1.75rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 1.05rem;
+      margin: 1.2rem 0 0.5rem;
+    }
+    p { margin-bottom: 0.85rem; }
+
+    .section-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.35rem;
+      box-shadow: var(--shadow);
+    }
+    .section-tag {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-primary);
+      background: var(--accent-primary-soft);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Math & Code */
+    .math-box {
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--accent-navy);
+      padding: 0.9rem 1.1rem;
+      border-radius: 0 6px 6px 0;
+      font-family: var(--font-serif);
+      font-size: 1.02rem;
+      margin: 0.85rem 0;
+      overflow-x: auto;
+    }
+    .pseudocode {
+      background: var(--bg-code);
+      color: var(--text-code);
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      border-radius: 8px;
+      padding: 1rem 0;
+      overflow-x: auto;
+      margin: 0.85rem 0;
+    }
+    .code-line {
+      padding: 0.22rem 1rem;
+      display: flex;
+      gap: 0.85rem;
+    }
+    .code-line.active-line {
+      background: rgba(245, 158, 11, 0.28);
+      border-left: 3px solid #F59E0B;
+    }
+    .line-no {
+      color: #64748B;
+      user-select: none;
+      min-width: 1.4rem;
+      text-align: right;
+    }
+
+    /* Labs & Controls */
+    .lab-panel {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.15rem;
+      margin: 1rem 0;
+    }
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+    input[type="text"], input[type="number"], select {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 0.42rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+    }
+    .array-bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0.65rem;
+      min-height: 185px;
+      padding: 1.25rem 0.5rem 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 0.75rem 0;
+    }
+    .bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      min-width: 44px;
+    }
+    .bar-rect {
+      width: 40px;
+      border-radius: 5px 5px 0 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 0.35rem;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: height 0.2s, background 0.2s;
+      background: #475569;
+    }
+    .bar-sorted { background: var(--accent-green); }
+    .bar-key { background: var(--accent-primary); }
+    .bar-compare { background: var(--accent-navy); }
+    .bar-idx { font-size: 0.74rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+    /* Heap Array Strip */
+    .heap-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: center;
+      margin: 0.75rem 0;
+    }
+    .heap-cell {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      border-radius: 6px;
+      padding: 0.35rem 0.55rem;
+      min-width: 52px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+    }
+    .heap-cell.active { border-color: var(--accent-primary); background: var(--accent-primary-soft); font-weight: 700; }
+    .heap-cell.compare { border-color: var(--accent-navy); background: var(--accent-navy-soft); font-weight: 700; }
+    .heap-cell.sorted { border-color: var(--accent-green); background: var(--accent-green-soft); }
+    .heap-cell.outside { opacity: 0.55; }
+
+    .var-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.6rem;
+      margin: 0.75rem 0;
+    }
+    .var-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.55rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+    }
+
+    /* Tables & TOC */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.9rem 0;
+      font-size: 0.88rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+    }
+    th { background: var(--bg-subtle); font-weight: 700; }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.9rem;
+      margin-top: 1rem;
+    }
+    .toc-part {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    /* Quiz */
+    .quiz-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      background: var(--bg-card);
+    }
+    .quiz-opt {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+      margin-top: 0.45rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+    .quiz-opt:hover { border-color: var(--accent-primary); }
+    .feedback {
+      margin-top: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-weight: 500;
+    }
+    .fb-ok { background: var(--accent-green-soft); color: var(--accent-green); }
+    .fb-err { background: var(--accent-red-soft); color: var(--accent-red); }
+
+    svg.chart {
+      width: 100%;
+      max-height: 290px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    @media (max-width: 860px) {
+      .app-shell { grid-template-columns: 1fr; }
+      aside {
+        position: static;
+        max-height: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand" onclick="navigate('home')">
+      <span class="brand-badge">CLRS v0.5.0</span>
+      <span class="brand-title">Algoritmus Labor</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-sm" onclick="navigate('home')">Kezdőlap</button>
+      <button class="btn btn-sm" id="themeBtn" onclick="toggleTheme()">Sötét mód</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside id="sidebar"></aside>
+    <main id="content"></main>
+  </div>
+
+  <script>
+    const STATE = {
+      view: 'home',
+      dark: false,
+      completed: {},
+      quizSolved: {}
+    };
+
+    try {
+      const saved = JSON.parse(localStorage.getItem('clrs_labor_v050') || '{}');
+      if (saved.view) STATE.view = saved.view;
+      if (saved.dark) STATE.dark = saved.dark;
+      if (saved.completed) STATE.completed = saved.completed;
+      if (saved.quizSolved) STATE.quizSolved = saved.quizSolved;
+    } catch (e) {}
+
+    function saveState() {
+      try {
+        localStorage.setItem('clrs_labor_v050', JSON.stringify(STATE));
+      } catch (e) {}
+    }
+
+    if (STATE.dark) {
+      document.body.classList.add('dark');
+      document.getElementById('themeBtn').textContent = 'Világos mód';
+    }
+
+    function toggleTheme() {
+      STATE.dark = !STATE.dark;
+      document.body.classList.toggle('dark', STATE.dark);
+      document.getElementById('themeBtn').textContent = STATE.dark ? 'Világos mód' : 'Sötét mód';
+      saveState();
+    }
+
+    const UNITS = [
+      { id: '1.1', part: 'I. Rész: Alapok', title: '1.1 Algoritmusok', prereq: 'Nincs (kiindulópont)', ready: true },
+      { id: '1.2', part: 'I. Rész: Alapok', title: '1.2 Az algoritmusok mint technológia', prereq: '1.1 Algoritmusok', ready: true },
+      { id: '2.1', part: 'I. Rész: Alapok', title: '2.1 Beszúró rendezés (Insertion Sort)', prereq: '1.1–1.2, tömbindexelés', ready: true },
+      { id: '2.2', part: 'I. Rész: Alapok', title: '2.2 Algoritmusok elemzése', prereq: '2.1, számtani sorozatok', ready: true },
+      { id: '2.3', part: 'I. Rész: Alapok', title: '2.3 Oszd meg és uralkodj (Merge Sort)', prereq: '2.1–2.2, rekurzió', ready: true },
+      { id: '3.0', part: 'I. Rész: Alapok', title: '3. Függvények növekedése (O, Ω, Θ, o, ω)', prereq: '2.2–2.3, határértékek', ready: true },
+      { id: '4.0', part: 'I. Rész: Alapok', title: '4. Oszd meg és uralkodj és a Mester-tétel', prereq: '2.3, 3. fejezet', ready: true },
+      { id: '6.0', part: 'II. Rész: Rendezés és rendstatisztikák', title: '6. Kupacrendezés (Heapsort & Prioritási sorok)', prereq: 'I. Rész (1–4. fejezet), teljes bináris fák', ready: true },
+      { id: '7.0', part: 'II. Rész: Rendezés és rendstatisztikák', title: '7. Gyorsrendezés (Quicksort) [Következő]', prereq: '2.3, 4. fejezet, 6. fejezet', ready: false },
+      { id: '8.0', part: 'II. Rész: Rendezés és rendstatisztikák', title: '8. Lineáris idejű rendezések [Tervezett]', prereq: '6–7. fejezet', ready: false },
+      { id: '10.0', part: 'III. Rész: Adatszerkezetek', title: '10–14. Elemi adatszerkezetek, Fák [Tervezett]', prereq: 'I–II. Rész', ready: false },
+      { id: '15.0', part: 'IV. Rész: Haladó tervezés', title: '15–17. Dinamikus programozás, Mohó [Tervezett]', prereq: 'I–III. Rész', ready: false },
+      { id: '22.0', part: 'VI. Rész: Gráfalgoritmusok', title: '22–26. Gráfbejárás, Legrövidebb utak [Tervezett]', prereq: 'I–IV. Rész', ready: false }
+    ];
+
+    function navigate(id) {
+      STATE.view = id;
+      saveState();
+      renderSidebar();
+      renderMain();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function markComplete(id) {
+      STATE.completed[id] = !STATE.completed[id];
+      saveState();
+      renderSidebar();
+      renderMain();
+    }
+
+    function renderSidebar() {
+      const doneCount = UNITS.filter(u => u.ready && STATE.completed[u.id]).length;
+      const totalReady = UNITS.filter(u => u.ready).length;
+      let html = `
+        <div style="margin-bottom:1rem; padding:0.75rem; background:var(--bg-subtle); border-radius:8px;">
+          <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">TANULÁSI HALADÁS (I–II. RÉSZ)</div>
+          <div style="font-size:1.15rem; font-weight:700; margin:0.2rem 0;">${doneCount} / ${totalReady} aktív egység kész</div>
+          <div style="height:6px; background:var(--border); border-radius:99px; overflow:hidden;">
+            <div style="height:100%; width:${Math.round((doneCount/totalReady)*100)}%; background:var(--accent-green);"></div>
+          </div>
+        </div>
+        <div class="nav-item ${STATE.view === 'home' ? 'active' : ''}" onclick="navigate('home')">
+          <span>Könyvborító & Tartalom</span>
+          <span class="status-pill pill-ready">Start</span>
+        </div>
+      `;
+
+      let currentPart = '';
+      for (const u of UNITS) {
+        if (u.part !== currentPart) {
+          currentPart = u.part;
+          html += `<div class="nav-section-title">${currentPart}</div>`;
+        }
+        const pill = !u.ready
+          ? '<span class="status-pill pill-soon">Hamarosan</span>'
+          : STATE.completed[u.id]
+            ? '<span class="status-pill pill-done">Kész</span>'
+            : '<span class="status-pill pill-ready">Aktív</span>';
+        html += `
+          <div class="nav-item ${STATE.view === u.id ? 'active' : ''} ${!u.ready ? 'locked' : ''}"
+               onclick="${u.ready ? `navigate('${u.id}')` : ''}">
+            <span>${u.title}</span>
+            ${pill}
+          </div>
+        `;
+      }
+      document.getElementById('sidebar').innerHTML = html;
+    }
+
+    function renderHome() {
+      return `
+        <div class="hero-card">
+          <div class="book-meta">Thomas H. Cormen • Charles E. Leiserson • Ronald L. Rivest • Clifford Stein</div>
+          <h1>Algoritmusok — Interaktív Laboratórium</h1>
+          <p style="font-size:1.05rem; color:var(--text-muted);">
+            Minden algoritmust először intuitíven megértünk, utána determinisztikus lépésenkénti szimulátorban működés közben látunk, majd matematikailag is bizonyítunk és elemzünk — szigorúan a könyv eredeti sorrendjében.
+          </p>
+          <div class="controls-row" style="margin-top:1.25rem; margin-bottom:0;">
+            <button class="btn btn-primary" onclick="navigate('1.1')">Tanulás indítása az 1.1. fejezettől →</button>
+            <button class="btn" onclick="navigate('6.0')">Új: 6. fejezet (Kupacrendezés / Heapsort)</button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">Élő előnézet</span>
+          <h2>Aszimptotikus növekedési nagyságrendek (n = 1 … 64)</h2>
+          <p>Állítsd a bemeneti méretet (<strong>n</strong>), és figyeld meg, miért válik az algoritmusválasztás döntő tényezővé nagy adathalmazoknál:</p>
+          <div class="controls-row">
+            <label>Bemeneti méret (n): <strong id="homeNVal">16</strong></label>
+            <input type="range" min="4" max="64" value="16" oninput="updateHomeChart(this.value)" />
+          </div>
+          <div id="homeChartBox"></div>
+        </div>
+
+        <h2>A könyv szerkezete (I–VIII. Rész)</h2>
+        <div class="toc-grid">
+          <div class="toc-part">
+            <span class="status-pill pill-done">Kész • 1–4. fejezet</span>
+            <h3>I. Rész: Alapok</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted);">1. Az algoritmusok szerepe • 2. Kezdeti lépések (Insertion Sort, Merge Sort) • 3. Függvények növekedése • 4. Oszd meg és uralkodj (Mester-tétel).</p>
+          </div>
+          <div class="toc-part">
+            <span class="status-pill pill-ready">Aktív • 6. fejezet kész</span>
+            <h3>II. Rész: Rendezés és rendstatisztikák</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted);"><strong>6. Kupacrendezés (Heapsort & Prioritási sorok) [KÉSZ]</strong> • 7. Gyorsrendezés • 8. Lineáris idejű rendezések • 9. Medián és rendstatisztikák.</p>
+          </div>
+          <div class="toc-part">
+            <span class="status-pill pill-soon">Tervezett • 10–14. fejezet</span>
+            <h3>III. Rész: Adatszerkezetek</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted);">10. Elemi adatszerkezetek • 11. Hasítótáblák • 12. Bináris keresőfák • 13. Piros-fekete fák • 14. Adatszerkezetek bővítése.</p>
+          </div>
+          <div class="toc-part">
+            <span class="status-pill pill-soon">Tervezett • 15–35. fejezet</span>
+            <h3>IV–VIII. Rész: DP, Mohó, Gráfok, NP</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted);">Dinamikus programozás • Mohó algoritmusok • Amortizált elemzés • Gráfalgoritmusok • Számelmélet • NP-teljesség.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateHomeChart(nVal) {
+      const n = parseInt(nVal, 10);
+      document.getElementById('homeNVal').textContent = n;
+      const box = document.getElementById('homeChartBox');
+      if (!box) return;
+      const nLogN = Math.round(n * Math.log2(n));
+      const nSq = n * n;
+      box.innerHTML = `
+        <div class="var-grid">
+          <div class="var-card"><strong>Θ(lg n):</strong> ${Math.log2(n).toFixed(2)} lépés</div>
+          <div class="var-card"><strong>Θ(n):</strong> ${n} lépés</div>
+          <div class="var-card" style="border-color:var(--accent-green);"><strong>Θ(n lg n):</strong> ${nLogN} lépés</div>
+          <div class="var-card" style="border-color:var(--accent-primary);"><strong>Θ(n²):</strong> ${nSq} lépés</div>
+        </div>
+        <div style="font-size:0.85rem; color:var(--text-muted);">
+          Arány: n = ${n} esetén az <strong>n²</strong> algoritmus <strong>${(nSq / Math.max(nLogN,1)).toFixed(1)}×</strong> több műveletet végez, mint az <strong>n lg n</strong> megoldás.
+        </div>
+      `;
+    }
+
+    /* ==================== UNIT 1.1 ==================== */
+    function renderUnit11() {
+      return unitShell('1.1', '1.1 Algoritmusok', 'I. Rész • 1. fejezet: Az algoritmusok szerepe a számítástechnikában', `
+        <div class="section-block">
+          <span class="section-tag">A–C. Bevezetés, előismeretek és intuíció</span>
+          <h3>Mi az algoritmus és mi a számítási probléma?</h3>
+          <p>Informálisan az <strong>algoritmus</strong> bármely jól definiált számítási eljárás, amely valamilyen értéket vagy értékhalmazt vesz fel <em>bemenetként</em>, és valamilyen értéket vagy értékhalmazt állít elő <em>kimenetként</em>. Az algoritmus tehát olyan számítási lépések sorozata, amely a bemenetet kimenetté alakítja.</p>
+          <div class="math-box">
+            <strong>A rendezési probléma formális definíciója:</strong><br/>
+            • <strong>Bemenet:</strong> n számból álló sorozat &langle;a₁, a₂, …, aₙ&rangle;.<br/>
+            • <strong>Kimenet:</strong> A bemeneti sorozat olyan &langle;a'₁, a'₂, …, a'ₙ&rangle; permutációja (átrendezése), amelyre teljesül: a'₁ ≤ a'₂ ≤ … ≤ a'ₙ.
+          </div>
+          <p>Egy algoritmust akkor nevezünk <strong>helyesnek</strong>, ha minden egyes bemeneti példányra a helyes kimenettel áll le. Egy helytelen algoritmus bizonyos példányokra nem áll meg, vagy rossz választ ad.</p>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D. Interaktív Problémapéldány- és Helyesség-ellenőrző</span>
+          <p>Adj meg egy tetszőleges számsorozatot és egy jelölt kimenetet, hogy ellenőrizd, teljesül-e a rendezési probléma két feltétele (permutáció + monoton növekvő sorrend):</p>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <label>Bemenet:</label>
+              <input type="text" id="u11In" value="31, 41, 59, 26, 41, 58" />
+              <label>Jelölt kimenet:</label>
+              <input type="text" id="u11Out" value="26, 31, 41, 41, 58, 59" />
+              <button class="btn btn-primary" onclick="check11()">Helyesség ellenőrzése</button>
+            </div>
+            <div id="u11Res"></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">E–G. Problématípusok és hatékonyság</span>
+          <p>A CLRS a rendezésen túl olyan alapvető problémákat tárgyal, mint a <strong>legrövidebb utak</strong> (útvonaltervezés), a <strong>DNS-szekvenciák</strong> leghosszabb közös részsorozata (LCS), a <strong>nyilvános kulcsú titkosítás</strong> (RSA) és a <strong>lineáris programozás</strong>. Bizonyos problémákra (pl. az utazó ügynök problémája, <em>NP-teljes</em> feladatok) ma nem ismerünk hatékony, polinomiális idejű megoldást.</p>
+        </div>
+      `, [
+        {
+          q: '1. Mikor helyes egy algoritmus a CLRS definíciója szerint?',
+          opts: [
+            'Ha a tesztesetek legalább 90%-ában gyorsan lefut.',
+            'Ha minden lehetséges bemeneti példányra véges lépésben leáll, és a helyes kimenetet adja.',
+            'Ha nem használ rekurziót.'
+          ],
+          ans: 1,
+          exp: 'A CLRS 1.1. fejezete szerint egy algoritmus akkor helyes, ha minden egyes bemeneti példányra a helyes kimenettel áll le.'
+        },
+        {
+          q: '2. Ha a bemenet ⟨5, 2, 5⟩, akkor a ⟨2, 5⟩ sorozat érvényes kimenete-e a rendezési problémának?',
+          opts: [
+            'Igen, mert növekvő sorrendben van.',
+            'Nem, mert nem a bemeneti sorozat permutációja (hiányzik egy 5-ös).'
+          ],
+          ans: 1,
+          exp: 'A kimenetnek a bemenet pontos permutációjának kell lennie, ugyanannyi elemmel és ugyanazokkal a multiplicitásokkal.'
+        }
+      ]);
+    }
+
+    function check11() {
+      const parse = s => s.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x));
+      const a = parse(document.getElementById('u11In').value);
+      const b = parse(document.getElementById('u11Out').value);
+      const sortedA = [...a].sort((x, y) => x - y);
+      const isPerm = a.length === b.length && sortedA.every((v, i) => v === [...b].sort((x, y) => x - y)[i]);
+      let isOrdered = true;
+      for (let i = 1; i < b.length; i++) if (b[i - 1] > b[i]) isOrdered = false;
+      const ok = isPerm && isOrdered && a.length > 0;
+      document.getElementById('u11Res').innerHTML = `
+        <div class="feedback ${ok ? 'fb-ok' : 'fb-err'}">
+          ${ok
+            ? `ÉRVÉNYES KIMENET: A kimenet a bemenet permutációja (n = ${a.length}), és teljesül az a'₁ ≤ a'₂ ≤ … ≤ a'ₙ rendezettségi feltétel.`
+            : `HIBÁS KIMENET: Permutáció teljesül? ${isPerm ? 'Igen' : 'Nem'} | Növekvő sorrend teljesül? ${isOrdered ? 'Igen' : 'Nem'}.`}
+        </div>
+      `;
+    }
+
+    /* ==================== UNIT 1.2 ==================== */
+    function renderUnit12() {
+      return unitShell('1.2', '1.2 Az algoritmusok mint technológia', 'I. Rész • 1. fejezet: Hatékonyság és erőforrás-gazdálkodás', `
+        <div class="section-block">
+          <span class="section-tag">A–C. Miért számít az algoritmus gyors hardver mellett is?</span>
+          <p>Tegyük fel, hogy a számítógépek végtelenül gyorsak és a memória ingyenes lenne. Még ekkor is szükség lenne az algoritmusok tanulmányozására a <strong>helyesség</strong> igazolása miatt. A valóságban azonban a számítási idő és a memória korlátozott erőforrás, ezért a teljes hatékonyság meghatározó tényezője maga az algoritmus.</p>
+          <div class="math-box">
+            <strong>A könyv klasszikus összehasonlítása (n = 10⁷ szám rendezése):</strong><br/>
+            • <strong>„A” gép (szupergyors):</strong> 10¹⁰ utasítás/mp, de Θ(n²) beszúró rendezést futtat (2n² utasítás).<br/>
+            • <strong>„B” gép (1000× lassabb):</strong> 10⁷ utasítás/mp, de Θ(n lg n) összefésüléses rendezést futtat (50 n lg n utasítás).
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D. Interaktív Hardver vs. Algoritmus Szimulátor</span>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <label>Elemszám (n): <strong id="u12NLabel">10 000 000</strong></label>
+              <input type="range" min="4" max="8" step="0.5" value="7" oninput="update12(this.value)" />
+            </div>
+            <div id="u12Output"></div>
+          </div>
+        </div>
+      `, [
+        {
+          q: '1. Miért győzi le az 1000-szer lassabb „B” gép az „A” szuperszámítógépet n = 10⁷ elemnél?',
+          opts: [
+            'Mert az n² növekedési üteme sokkal gyorsabban nő, mint az n lg n, így nagyobb n-nél a konstans hardverelőny eltűnik.',
+            'Mert a „B” gép több RAM-mal rendelkezik.'
+          ],
+          ans: 0,
+          exp: 'A gépek sebessége csak konstans szorzó (1000×), míg az n / lg n arány n = 10⁷-nél már több mint 400 000-szeres algoritmikus előnyt jelent!'
+        }
+      ]);
+    }
+
+    function update12(expVal) {
+      const n = Math.round(Math.pow(10, parseFloat(expVal)));
+      document.getElementById('u12NLabel').textContent = n.toLocaleString('hu-HU');
+      const timeA = (2 * n * n) / 1e10;
+      const timeB = (50 * n * Math.log2(n)) / 1e7;
+      const out = document.getElementById('u12Output');
+      if (!out) return;
+      out.innerHTML = `
+        <div class="var-grid">
+          <div class="var-card" style="border-color:var(--accent-primary);">
+            <strong>„A” gép (2n² / 10¹⁰):</strong><br/>${timeA.toFixed(2)} másodperc (${(timeA/3600).toFixed(2)} óra)
+          </div>
+          <div class="var-card" style="border-color:var(--accent-green);">
+            <strong>„B” gép (50 n lg n / 10⁷):</strong><br/>${timeB.toFixed(2)} másodperc (${(timeB/60).toFixed(2)} perc)
+          </div>
+          <div class="var-card">
+            <strong>Gyorsulás (B vs. A):</strong><br/>${(timeA / timeB).toFixed(1)}× gyorsabb a lassabb gép!
+          </div>
+        </div>
+      `;
+    }
+
+    /* ==================== UNIT 2.1: INSERTION SORT ==================== */
+    let IS_STEPS = [];
+    let IS_IDX = 0;
+
+    function buildInsertionSteps(arrInput) {
+      const A = [...arrInput];
+      const n = A.length;
+      const steps = [];
+      steps.push({
+        arr: [...A], j: 2, i: null, key: null, line: 1,
+        inv: `Inicializálás (j = 2): Az A[1..1] = [${A[0]}] résztömb triviálisan rendezett.`,
+        desc: 'Kezdőállapot: a 2. elemtől indulunk (1-alapú CLRS indexelés).'
+      });
+
+      for (let j = 2; j <= n; j++) {
+        const key = A[j - 1];
+        steps.push({
+          arr: [...A], j, i: null, key, line: 2,
+          inv: `A ciklus kezdetén A[1..${j-1}] = [${A.slice(0, j-1).join(', ')}] rendezett.`,
+          desc: `Kiemeljük a key = A[${j}] = ${key} elemet.`
+        });
+        let i = j - 1;
+        steps.push({
+          arr: [...A], j, i, key, line: 4,
+          inv: `A[1..${j-1}] rendezett; keressük a ${key} helyét balra haladva.`,
+          desc: `Mutató beállítása: i = j - 1 = ${i}.`
+        });
+
+        while (i > 0 && A[i - 1] > key) {
+          steps.push({
+            arr: [...A], j, i, key, line: 5,
+            inv: `A[${i}] = ${A[i-1]} > key (${key}), ezért jobbra csúsztatjuk.`,
+            desc: `Feltétel igaz (i=${i} > 0 és A[${i}]=${A[i-1]} > ${key}).`
+          });
+          A[i] = A[i - 1];
+          steps.push({
+            arr: [...A], j, i, key, line: 6,
+            inv: `A[${i+1}] helyére másoltuk a ${A[i-1]} értéket.`,
+            desc: `Eltolás: A[${i+1}] = A[${i}] (${A[i-1]}).`
+          });
+          i = i - 1;
+        }
+        A[i] = key;
+        steps.push({
+          arr: [...A], j, i, key, line: 8,
+          inv: `Befejezés / Fenntartás: A[1..${j}] = [${A.slice(0, j).join(', ')}] most már rendezett!`,
+          desc: `Beszúrás: A[${i+1}] = ${key}.`
+        });
+      }
+      steps.push({
+        arr: [...A], j: n + 1, i: null, key: null, line: 1,
+        inv: `Befejezés (j = ${n+1} > n): A teljes A[1..${n}] tömb rendezett!`,
+        desc: 'Az INSERTION-SORT algoritmus befejeződött.'
+      });
+      return steps;
+    }
+
+    function renderUnit21() {
+      return unitShell('2.1', '2.1 Beszúró rendezés (INSERTION-SORT)', 'I. Rész • 2. fejezet: Kezdeti lépések', `
+        <div class="section-block">
+          <span class="section-tag">A–C. Intuitív analógia: Kártyalapok rendezése kézben</span>
+          <p>A beszúró rendezés pontosan úgy működik, ahogyan a kártyajátékosok rendezik a kezükben tartott lapokat: bal kezünkben már rendezett lapok vannak, jobb kézzel pedig egyesével húzunk egy új lapot (<code>key</code>), és jobbról balra haladva megkeressük a helyét a már rendezett lapok között.</p>
+          <div class="math-box">
+            <strong>Ciklusinvariáns (2.1. tétel):</strong><br/>
+            A <code>for</code> ciklus minden egyes iterációjának kezdetén az <code>A[1 .. j - 1]</code> résztömb az eredetileg az <code>A[1 .. j - 1]</code> helyeken álló elemekből áll, de már <strong>rendezett sorrendben</strong>.
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D–E. Interaktív INSERTION-SORT Debugger & CLRS Pszeudokód</span>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <label>Tömb (1-alapú indexelés):</label>
+              <input type="text" id="isInput" value="5, 2, 4, 6, 1, 3" />
+              <button class="btn btn-primary" onclick="initIS()">Betöltés</button>
+              <button class="btn" onclick="stepIS(-1)">← Előző</button>
+              <button class="btn" onclick="stepIS(1)">Következő →</button>
+              <span id="isCounter" style="font-size:0.84rem; font-weight:700;"></span>
+            </div>
+
+            <div id="isBars" class="array-bars"></div>
+            <div id="isVars" class="var-grid"></div>
+            <div id="isInvBox" class="math-box"></div>
+
+            <div class="pseudocode" id="isCode">
+              <div class="code-line" data-line="1"><span class="line-no">1</span><span><strong>for</strong> j = 2 <strong>to</strong> A.length</span></div>
+              <div class="code-line" data-line="2"><span class="line-no">2</span><span>&nbsp;&nbsp;&nbsp;&nbsp;key = A[j]</span></div>
+              <div class="code-line" data-line="3"><span class="line-no">3</span><span>&nbsp;&nbsp;&nbsp;&nbsp;// Beszúrjuk A[j]-t a rendezett A[1 .. j - 1] sorozatba.</span></div>
+              <div class="code-line" data-line="4"><span class="line-no">4</span><span>&nbsp;&nbsp;&nbsp;&nbsp;i = j - 1</span></div>
+              <div class="code-line" data-line="5"><span class="line-no">5</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<strong>while</strong> i &gt; 0 <strong>and</strong> A[i] &gt; key</span></div>
+              <div class="code-line" data-line="6"><span class="line-no">6</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A[i + 1] = A[i]</span></div>
+              <div class="code-line" data-line="7"><span class="line-no">7</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i = i - 1</span></div>
+              <div class="code-line" data-line="8"><span class="line-no">8</span><span>&nbsp;&nbsp;&nbsp;&nbsp;A[i + 1] = key</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">F. Helyesség bizonyítása ciklusinvariánssal</span>
+          <p><strong>1. Inicializálás:</strong> <code>j = 2</code> esetén <code>A[1..1]</code> egyetlen elemből áll, így triviálisan rendezett.<br/>
+          <strong>2. Fenntartás:</strong> A belső <code>while</code> ciklus egyesével jobbra tolja az <code>A[j - 1], A[j - 2], …</code> elemeket mindaddig, amíg meg nem találja a <code>key</code> helyét, így <code>A[1..j]</code> rendezett marad.<br/>
+          <strong>3. Befejezés:</strong> A ciklus <code>j = n + 1</code> értéknél áll le, ekkor az invariáns szerint <code>A[1..n]</code> a teljes tömb rendezett elemeit tartalmazza.</p>
+        </div>
+      `, [
+        {
+          q: '1. Miért j = 2-től indul a külső ciklus a CLRS INSERTION-SORT algoritmusában?',
+          opts: [
+            'Mert a CLRS 1-alapú tömbindexelést használ, és az egyelemű A[1..1] résztömb már eleve rendezett.',
+            'Mert az első elemet figyelmen kívül hagyja.'
+          ],
+          ans: 0,
+          exp: 'A CLRS 1-től n-ig indexeli a tömböket; az első elem önmagában rendezett, így a beszúrás a 2. elemtől indul.'
+        }
+      ]);
+    }
+
+    function initIS() {
+      const inp = document.getElementById('isInput');
+      if (!inp) return;
+      const arr = inp.value.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x));
+      if (arr.length < 2) return;
+      IS_STEPS = buildInsertionSteps(arr);
+      IS_IDX = 0;
+      renderISStep();
+    }
+
+    function stepIS(delta) {
+      if (!IS_STEPS.length) return;
+      IS_IDX = Math.max(0, Math.min(IS_STEPS.length - 1, IS_IDX + delta));
+      renderISStep();
+    }
+
+    function renderISStep() {
+      const s = IS_STEPS[IS_IDX];
+      if (!s) return;
+      const maxVal = Math.max(...s.arr, 1);
+      document.getElementById('isCounter').textContent = `Lépés: ${IS_IDX + 1} / ${IS_STEPS.length}`;
+      document.getElementById('isBars').innerHTML = s.arr.map((v, idx) => {
+        const oneIdx = idx + 1;
+        let cls = 'bar-rect';
+        if (oneIdx === s.j) cls += ' bar-key';
+        else if (oneIdx === s.i) cls += ' bar-compare';
+        else if (oneIdx < s.j) cls += ' bar-sorted';
+        const h = Math.max(30, Math.round((v / maxVal) * 145));
+        return `<div class="bar-col"><div class="${cls}" style="height:${h}px">${v}</div><span class="bar-idx">A[${oneIdx}]</span></div>`;
+      }).join('');
+
+      document.getElementById('isVars').innerHTML = `
+        <div class="var-card"><strong>j:</strong> ${s.j}</div>
+        <div class="var-card"><strong>i:</strong> ${s.i ?? '—'}</div>
+        <div class="var-card"><strong>key:</strong> ${s.key ?? '—'}</div>
+        <div class="var-card"><strong>Állapot:</strong> ${s.desc}</div>
+      `;
+      document.getElementById('isInvBox').innerHTML = `<strong>Ciklusinvariáns-állapot:</strong> ${s.inv}`;
+      document.querySelectorAll('#isCode .code-line').forEach(el => {
+        el.classList.toggle('active-line', Number(el.dataset.line) === s.line);
+      });
+    }
+
+    /* ==================== UNIT 2.2 ==================== */
+    function renderUnit22() {
+      return unitShell('2.2', '2.2 Algoritmusok elemzése', 'I. Rész • 2. fejezet: RAM-modell és futásidő-függvények', `
+        <div class="section-block">
+          <span class="section-tag">A–C. A RAM (Random-Access Machine) számítási modell</span>
+          <p>Az algoritmusok elemzéséhez egy szabványos, egyszálú gépi modellre van szükségünk: a <strong>RAM-modellben</strong> az utasítások egymás után, párhuzamosság nélkül hajtódnak végre, és minden elemi művelet (összeadás, szorzás, értékadás, indexelés) konstans időt vesz igénybe.</p>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D–G. Az INSERTION-SORT soronkénti költségtáblázata</span>
+          <p>Jelölje <em>t<sub>j</sub></em> azt, ahányszor az 5. sor <code>while</code> feltétele kiértékelődik egy adott <em>j</em> értékre:</p>
+          <table>
+            <thead>
+              <tr><th>Sor</th><th>Utasítás</th><th>Költség</th><th>Végrehajtások száma</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><code>for j = 2 to A.length</code></td><td>c₁</td><td>n</td></tr>
+              <tr><td>2</td><td><code>key = A[j]</code></td><td>c₂</td><td>n - 1</td></tr>
+              <tr><td>4</td><td><code>i = j - 1</code></td><td>c₄</td><td>n - 1</td></tr>
+              <tr><td>5</td><td><code>while i &gt; 0 and A[i] &gt; key</code></td><td>c₅</td><td>∑<sub>j=2..n</sub> t<sub>j</sub></td></tr>
+              <tr><td>6</td><td><code>A[i + 1] = A[i]</code></td><td>c₆</td><td>∑<sub>j=2..n</sub> (t<sub>j</sub> - 1)</td></tr>
+              <tr><td>7</td><td><code>i = i - 1</code></td><td>c₇</td><td>∑<sub>j=2..n</sub> (t<sub>j</sub> - 1)</td></tr>
+              <tr><td>8</td><td><code>A[i + 1] = key</code></td><td>c₈</td><td>n - 1</td></tr>
+            </tbody>
+          </table>
+
+          <div class="math-box">
+            <strong>Legjobb eset (már rendezett tömb, t<sub>j</sub> = 1):</strong><br/>
+            T(n) = c₁n + c₂(n - 1) + c₄(n - 1) + c₅(n - 1) + c₈(n - 1) = (c₁ + c₂ + c₄ + c₅ + c₈)n - (c₂ + c₄ + c₅ + c₈) = <strong>an + b = Θ(n)</strong>.<br/><br/>
+            <strong>Legrosszabb eset (fordított sorrend, t<sub>j</sub> = j):</strong><br/>
+            Mivel ∑<sub>j=2..n</sub> j = n(n + 1)/2 - 1, ezért:<br/>
+            T(n) = (c₅/2 + c₆/2 + c₇/2)n² + (c₁ + c₂ + c₄ + c₅/2 - c₆/2 - c₇/2 + c₈)n - (c₂ + c₄ + c₅ + c₈) = <strong>an² + bn + c = Θ(n²)</strong>.
+          </div>
+
+          <div class="lab-panel">
+            <div class="controls-row">
+              <label>Bemeneti méret (n): <strong id="u22NVal">20</strong></label>
+              <input type="range" min="5" max="100" value="20" oninput="update22(this.value)" />
+            </div>
+            <div id="u22Out"></div>
+          </div>
+        </div>
+      `, [
+        {
+          q: '1. Milyen futásidejű az INSERTION-SORT, ha a bemeneti tömb már eleve növekvő sorrendben van?',
+          opts: ['Θ(n²) — mindig kvadratikus.', 'Θ(n) — lineáris, mert a belső while ciklus minden j-re rögtön az első vizsgálatnál kilép (t_j = 1).'],
+          ans: 1,
+          exp: 'Ha a tömb rendezett, A[i] <= key rögtön teljesül, így t_j = 1 minden j-re, és T(n) lineáris függvénye n-nek.'
+        }
+      ]);
+    }
+
+    function update22(nVal) {
+      const n = Number(nVal);
+      document.getElementById('u22NVal').textContent = n;
+      const best = 5 * n - 4;
+      const worst = 1.5 * n * n + 3.5 * n - 4;
+      const out = document.getElementById('u22Out');
+      if (!out) return;
+      out.innerHTML = `
+        <div class="var-grid">
+          <div class="var-card" style="border-color:var(--accent-green);"><strong>Legjobb eset T<sub>best</sub>(n):</strong><br/>${best} elemi lépés (Θ(n))</div>
+          <div class="var-card" style="border-color:var(--accent-primary);"><strong>Legrosszabb eset T<sub>worst</sub>(n):</strong><br/>${Math.round(worst)} elemi lépés (Θ(n²))</div>
+        </div>
+      `;
+    }
+
+    /* ==================== UNIT 2.3: MERGE SORT ==================== */
+    let MS_STEPS = [];
+    let MS_IDX = 0;
+
+    function buildMergeSortSteps(inputArr) {
+      const steps = [];
+      function rec(arr, p, r, depth) {
+        steps.push({
+          sub: [...arr], p, r, depth, phase: 'Felosztás (Divide)',
+          desc: p < r
+            ? `MERGE-SORT(A, ${p}, ${r}) — középpont q = ⌊(${p}+${r})/2⌋ = ${Math.floor((p+r)/2)}`
+            : `Alapeset (p = r = ${p}): egyetlen elem [${arr[0]}], már rendezett.`
+        });
+        if (p < r) {
+          const q = Math.floor((p + r) / 2);
+          const mid = q - p + 1;
+          const left = rec(arr.slice(0, mid), p, q, depth + 1);
+          const right = rec(arr.slice(mid), q + 1, r, depth + 1);
+          const merged = [];
+          let i = 0, j = 0;
+          while (i < left.length && j < right.length) {
+            if (left[i] <= right[j]) merged.push(left[i++]);
+            else merged.push(right[j++]);
+          }
+          while (i < left.length) merged.push(left[i++]);
+          while (j < right.length) merged.push(right[j++]);
+          steps.push({
+            sub: [...merged], p, r, depth, phase: 'Összefésülés (MERGE)',
+            desc: `MERGE(A, ${p}, ${q}, ${r}): [${left.join(', ')}] + [${right.join(', ')}] → [${merged.join(', ')}]`
+          });
+          return merged;
+        }
+        return arr;
+      }
+      rec(inputArr, 1, inputArr.length, 0);
+      return steps;
+    }
+
+    function renderUnit23() {
+      return unitShell('2.3', '2.3 Algoritmusok tervezése — Oszd meg és uralkodj (MERGE-SORT)', 'I. Rész • 2. fejezet: Rekurzió és őrszemek', `
+        <div class="section-block">
+          <span class="section-tag">A–C. Az „Oszd meg és uralkodj” paradigma három lépése</span>
+          <p><strong>1. Oszd meg (Divide):</strong> A problémát több kisebb részproblémára bontjuk, amelyek ugyanannak a problémának a kisebb példányai.<br/>
+          <strong>2. Uralkodj (Conquer):</strong> A részproblémákat rekurzívan megoldjuk (ha elég kicsik, közvetlenül).<br/>
+          <strong>3. Kombináld (Combine):</strong> A részproblémák megoldásaiból összeállítjuk az eredeti probléma megoldását.</p>
+          <div class="math-box">
+            <strong>A MERGE-SORT futásidejének rekurzív egyenlete:</strong><br/>
+            T(n) = Θ(1), ha n = 1; &nbsp;&nbsp; T(n) = 2T(n/2) + Θ(n), ha n &gt; 1.<br/>
+            A rekurziós fa magassága <strong>lg n</strong> (szintek száma: <strong>lg n + 1</strong>), minden egyes szinten az összefésülés összköltsége <strong>cn</strong>, így a teljes futásidő: <strong>T(n) = cn(lg n + 1) = Θ(n lg n)</strong>.
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D–E. Interaktív MERGE-SORT Lépés- és Rekurziós Szint Labor</span>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <label>Tömb:</label>
+              <input type="text" id="msInput" value="38, 27, 43, 3, 9, 82, 10" />
+              <button class="btn btn-primary" onclick="initMS()">Futtatás</button>
+              <button class="btn" onclick="stepMS(-1)">← Előző</button>
+              <button class="btn" onclick="stepMS(1)">Következő →</button>
+              <span id="msCounter" style="font-size:0.84rem; font-weight:700;"></span>
+            </div>
+            <div id="msDisplay"></div>
+
+            <div class="pseudocode">
+              <div class="code-line"><span class="line-no">1</span><span><strong>MERGE-SORT(A, p, r)</strong></span></div>
+              <div class="code-line"><span class="line-no">2</span><span><strong>if</strong> p &lt; r</span></div>
+              <div class="code-line"><span class="line-no">3</span><span>&nbsp;&nbsp;&nbsp;&nbsp;q = ⌊(p + r) / 2⌋</span></div>
+              <div class="code-line"><span class="line-no">4</span><span>&nbsp;&nbsp;&nbsp;&nbsp;MERGE-SORT(A, p, q)</span></div>
+              <div class="code-line"><span class="line-no">5</span><span>&nbsp;&nbsp;&nbsp;&nbsp;MERGE-SORT(A, q + 1, r)</span></div>
+              <div class="code-line"><span class="line-no">6</span><span>&nbsp;&nbsp;&nbsp;&nbsp;MERGE(A, p, q, r)</span></div>
+            </div>
+          </div>
+        </div>
+      `, [
+        {
+          q: '1. Miért helyez a CLRS MERGE eljárása ∞ (végtelen) őrszem elemeket az L és R segédtömbök végére?',
+          opts: [
+            'Hogy elkerülje minden lépésben annak vizsgálatát, hogy valamelyik segédtömb kiürült-e már.',
+            'Hogy növelje a tömb méretét.'
+          ],
+          ans: 0,
+          exp: 'Az ∞ őrszem garantálja, hogy ha az egyik tömb valós elemei elfogytak, a másik tömb minden eleme kisebb marad ∞-nél, így nincs szükség külön indexhatár-ellenőrzésre.'
+        }
+      ]);
+    }
+
+    function initMS() {
+      const inp = document.getElementById('msInput');
+      if (!inp) return;
+      const arr = inp.value.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x));
+      if (arr.length < 2) return;
+      MS_STEPS = buildMergeSortSteps(arr);
+      MS_IDX = 0;
+      renderMSStep();
+    }
+
+    function stepMS(d) {
+      if (!MS_STEPS.length) return;
+      MS_IDX = Math.max(0, Math.min(MS_STEPS.length - 1, MS_IDX + d));
+      renderMSStep();
+    }
+
+    function renderMSStep() {
+      const s = MS_STEPS[MS_IDX];
+      if (!s) return;
+      document.getElementById('msCounter').textContent = `Lépés: ${MS_IDX + 1} / ${MS_STEPS.length}`;
+      const isMerge = s.phase.includes('MERGE');
+      document.getElementById('msDisplay').innerHTML = `
+        <div class="var-grid">
+          <div class="var-card"><strong>Fázis:</strong> ${s.phase}</div>
+          <div class="var-card"><strong>Tartomány:</strong> A[${s.p} .. ${s.r}]</div>
+          <div class="var-card"><strong>Rekurziós mélység:</strong> ${s.depth}</div>
+        </div>
+        <div class="math-box" style="border-left-color:${isMerge ? 'var(--accent-green)' : 'var(--accent-primary)'};">
+          <strong>Aktuális művelet:</strong> ${s.desc}<br/>
+          <strong>Aktív résztömb tartalma:</strong> [${s.sub.join(', ')}]
+        </div>
+      `;
+    }
+
+    /* ==================== UNIT 3.0: ASYMPTOTIC NOTATION ==================== */
+    function renderUnit30() {
+      return unitShell('3.0', '3. Függvények növekedése (O, Ω, Θ, o, ω)', 'I. Rész • 3. fejezet: Aszimptotikus jelölések', `
+        <div class="section-block">
+          <span class="section-tag">A–C. Formális aszimptotikus definíciók</span>
+          <div class="math-box">
+            • <strong>Θ(g(n)) (aszimptotikusan szoros korlát):</strong> ∃ c₁, c₂ &gt; 0 és n₀ &gt; 0 úgy, hogy ∀ n ≥ n₀ esetén: <code>0 ≤ c₁·g(n) ≤ f(n) ≤ c₂·g(n)</code>.<br/>
+            • <strong>O(g(n)) (aszimptotikus felső korlát):</strong> ∃ c &gt; 0 és n₀ &gt; 0 úgy, hogy ∀ n ≥ n₀ esetén: <code>0 ≤ f(n) ≤ c·g(n)</code>.<br/>
+            • <strong>Ω(g(n)) (aszimptotikus alsó korlát):</strong> ∃ c &gt; 0 és n₀ &gt; 0 úgy, hogy ∀ n ≥ n₀ esetén: <code>0 ≤ c·g(n) ≤ f(n)</code>.
+          </div>
+          <p><strong>3.1. tétel:</strong> Bármely két f(n) és g(n) függvényre <code>f(n) = Θ(g(n))</code> akkor és csak akkor teljesül, ha <code>f(n) = O(g(n))</code> és <code>f(n) = Ω(g(n))</code> egyszerre fennáll.</p>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D. Interaktív Aszimptotikus Szendvics-labor: f(n) = ½n² - 3n = Θ(n²)</span>
+          <p>Állítsd a <strong>c₁</strong>, <strong>c₂</strong> pozitív konstansokat és az <strong>n₀</strong> küszöbértéket, és ellenőrizd a könyv klasszikus tételét!</p>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <label>c₁: <strong id="c1Val">0.25</strong></label>
+              <input type="range" min="0.05" max="0.60" step="0.05" value="0.25" oninput="update30()" id="c1Slider" />
+              <label>c₂: <strong id="c2Val">0.50</strong></label>
+              <input type="range" min="0.40" max="1.20" step="0.05" value="0.50" oninput="update30()" id="c2Slider" />
+              <label>n₀: <strong id="n0Val">14</strong></label>
+              <input type="range" min="4" max="24" step="1" value="14" oninput="update30()" id="n0Slider" />
+            </div>
+            <div id="u30Status"></div>
+            <svg id="u30Svg" class="chart" viewBox="0 0 600 250"></svg>
+          </div>
+        </div>
+      `, [
+        {
+          q: '1. A könyv bizonyítása szerint f(n) = ½n² - 3n esetén melyik (c₁, c₂, n₀) hármas igazolja a Θ(n²) állítást?',
+          opts: ['c₁ = 1/14, c₂ = 1/2, n₀ = 7', 'c₁ = 1, c₂ = 2, n₀ = 1'],
+          ans: 0,
+          exp: 'A CLRS 3.1. szakaszában c₁ = 1/14 és c₂ = 1/2 választással minden n ≥ 7-re teljesül: (1/14)n² ≤ ½n² - 3n ≤ (1/2)n².'
+        }
+      ]);
+    }
+
+    function update30() {
+      const c1El = document.getElementById('c1Slider');
+      if (!c1El) return;
+      const c1 = parseFloat(c1El.value);
+      const c2 = parseFloat(document.getElementById('c2Slider').value);
+      const n0 = parseInt(document.getElementById('n0Slider').value, 10);
+      document.getElementById('c1Val').textContent = c1.toFixed(2);
+      document.getElementById('c2Val').textContent = c2.toFixed(2);
+      document.getElementById('n0Val').textContent = n0;
+
+      let holds = true;
+      for (let n = n0; n <= 40; n++) {
+        const f = 0.5 * n * n - 3 * n;
+        if (!(0 <= c1 * n * n && c1 * n * n <= f && f <= c2 * n * n)) {
+          holds = false;
+          break;
+        }
+      }
+      document.getElementById('u30Status').innerHTML = `
+        <div class="feedback ${holds ? 'fb-ok' : 'fb-err'}">
+          ${holds
+            ? `IGAZOLVA (n ≥ ${n0}): Minden vizsgált n ≥ ${n0} esetén teljesül: ${c1.toFixed(2)}·n² ≤ ½n² - 3n ≤ ${c2.toFixed(2)}·n².`
+            : `NEM TELJESÜL minden n ≥ ${n0} esetén! Növeld n₀-t vagy csökkentsd c₁-et (pl. c₁ ≤ 0.25, c₂ ≥ 0.50, n₀ ≥ 12).`}
+        </div>
+      `;
+
+      const maxN = 30;
+      const maxY = Math.max(c2 * maxN * maxN, 0.5 * maxN * maxN);
+      const toX = n => 45 + (n / maxN) * 530;
+      const toY = y => 220 - (Math.max(0, y) / maxY) * 190;
+
+      const ptsF = [], ptsC1 = [], ptsC2 = [];
+      for (let n = 1; n <= maxN; n++) {
+        ptsF.push(`${toX(n)},${toY(0.5 * n * n - 3 * n)}`);
+        ptsC1.push(`${toX(n)},${toY(c1 * n * n)}`);
+        ptsC2.push(`${toX(n)},${toY(c2 * n * n)}`);
+      }
+      const xN0 = toX(n0);
+      document.getElementById('u30Svg').innerHTML = `
+        <line x1="45" y1="220" x2="580" y2="220" stroke="#94A3B8" />
+        <line x1="45" y1="20" x2="45" y2="220" stroke="#94A3B8" />
+        <line x1="${xN0}" y1="20" x2="${xN0}" y2="220" stroke="#B45309" stroke-dasharray="4 4" />
+        <text x="${xN0 + 4}" y="34" fill="#B45309" font-size="11" font-weight="bold">n₀ = ${n0}</text>
+        <polyline fill="none" stroke="#1E3A8A" stroke-width="2.2" points="${ptsC2.join(' ')}" />
+        <polyline fill="none" stroke="#B45309" stroke-width="2.6" points="${ptsF.join(' ')}" />
+        <polyline fill="none" stroke="#047857" stroke-width="2.2" points="${ptsC1.join(' ')}" />
+        <text x="430" y="34" fill="#1E3A8A" font-size="11">c₂·n² (felső)</text>
+        <text x="430" y="50" fill="#B45309" font-size="11">f(n) = ½n² - 3n</text>
+        <text x="430" y="66" fill="#047857" font-size="11">c₁·n² (alsó)</text>
+      `;
+    }
+
+    /* ==================== UNIT 4.0: MASTER THEOREM ==================== */
+    function renderUnit40() {
+      return unitShell('4.0', '4. Oszd meg és uralkodj — Rekurziók és a Mester-tétel', 'I. Rész • 4. fejezet: Helyettesítéses módszer, rekurziós fa, Mester-tétel', `
+        <div class="section-block">
+          <span class="section-tag">A–C. A Mester-tétel (4.1. tétel)</span>
+          <p>Legyen <code>a ≥ 1</code> és <code>b &gt; 1</code> konstans, <code>f(n)</code> egy függvény, és definiáljuk <code>T(n)</code>-et a nemnegatív egészeken a <code>T(n) = aT(n/b) + f(n)</code> rekurzióval. Ekkor a kritikus kitevő <strong>n<sup>log<sub>b</sub> a</sup></strong> és <strong>f(n)</strong> viszonya dönti el a megoldást:</p>
+          <div class="math-box">
+            <strong>1. eset:</strong> Ha f(n) = O(n<sup>log<sub>b</sub> a - ε</sup>) valamely ε &gt; 0 konstansra (a levelek munkája dominál), akkor <strong>T(n) = Θ(n<sup>log<sub>b</sub> a</sup>)</strong>.<br/>
+            <strong>2. eset:</strong> Ha f(n) = Θ(n<sup>log<sub>b</sub> a</sup>) (minden szinten egyforma a költség), akkor <strong>T(n) = Θ(n<sup>log<sub>b</sub> a</sup> lg n)</strong>.<br/>
+            <strong>3. eset:</strong> Ha f(n) = Ω(n<sup>log<sub>b</sub> a + ε</sup>) valamely ε &gt; 0 konstansra, ÉS teljesül a regularitási feltétel (<code>a·f(n/b) ≤ c·f(n)</code> valamely c &lt; 1-re), akkor <strong>T(n) = Θ(f(n))</strong>.
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D. Interaktív Mester-tétel Kalkulátor & Rekurziós Fa</span>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <button class="btn btn-sm" onclick="preset40(2, 2, 1)">Merge Sort (2, 2, n¹)</button>
+              <button class="btn btn-sm" onclick="preset40(1, 2, 0)">Bináris keresés (1, 2, n⁰)</button>
+              <button class="btn btn-sm" onclick="preset40(7, 2, 2)">Strassen (7, 2, n²)</button>
+              <button class="btn btn-sm" onclick="preset40(3, 4, 2)">3T(n/4) + n²</button>
+            </div>
+            <div class="controls-row">
+              <label>a (részproblémák): <strong id="mAVal">2</strong></label>
+              <input type="range" min="1" max="8" step="1" value="2" id="mA" oninput="update40()" />
+              <label>b (osztó): <strong id="mBVal">2</strong></label>
+              <input type="range" min="2" max="4" step="1" value="2" id="mB" oninput="update40()" />
+              <label>f(n) = n<sup>d</sup>, d: <strong id="mDVal">1</strong></label>
+              <input type="range" min="0" max="3" step="0.5" value="1" id="mD" oninput="update40()" />
+            </div>
+            <div id="u40Out"></div>
+          </div>
+        </div>
+      `, [
+        {
+          q: '1. Mi a Strassen-féle mátrixszorzás T(n) = 7T(n/2) + Θ(n²) rekurziójának aszimptotikus megoldása?',
+          opts: ['Θ(n² lg n)', 'Θ(n^(lg 7)) ≈ Θ(n^2.81) — az 1. eset alapján, mert log₂ 7 ≈ 2.807 > 2.'],
+          ans: 1,
+          exp: 'Mivel log₂ 7 ≈ 2.807 > 2, a levelek száma (n^2.807) polinomiálisan nagyobb, mint f(n) = n², így az 1. eset érvényes.'
+        }
+      ]);
+    }
+
+    function preset40(a, b, d) {
+      document.getElementById('mA').value = a;
+      document.getElementById('mB').value = b;
+      document.getElementById('mD').value = d;
+      update40();
+    }
+
+    function update40() {
+      const aEl = document.getElementById('mA');
+      if (!aEl) return;
+      const a = Number(aEl.value);
+      const b = Number(document.getElementById('mB').value);
+      const d = Number(document.getElementById('mD').value);
+      document.getElementById('mAVal').textContent = a;
+      document.getElementById('mBVal').textContent = b;
+      document.getElementById('mDVal').textContent = d;
+
+      const crit = Math.log(a) / Math.log(b);
+      let caseTitle = '';
+      let theta = '';
+      let explanation = '';
+
+      if (Math.abs(crit - d) < 0.02) {
+        caseTitle = '2. eset (Kiegyensúlyozott rekurziós fa)';
+        theta = d === 0 ? 'Θ(lg n)' : d === 1 ? 'Θ(n lg n)' : `Θ(n^${d} lg n)`;
+        explanation = `Mivel log_${b}(${a}) = ${crit.toFixed(3)} = d (${d}), a rekurziós fa mind a log_${b}(n) szintjén azonos munka zajlik.`;
+      } else if (crit > d) {
+        caseTitle = '1. eset (A levelek munkája dominál)';
+        theta = `Θ(n^${crit.toFixed(3)})`;
+        explanation = `Mivel log_${b}(${a}) = ${crit.toFixed(3)} > d (${d}), a levelek száma polinomiálisan túlnövi a gyökér f(n) költségét.`;
+      } else {
+        const regFactor = a / Math.pow(b, d);
+        caseTitle = '3. eset (A gyökér munkája dominál)';
+        theta = `Θ(n^${d})`;
+        explanation = `Mivel d (${d}) > log_${b}(${a}) = ${crit.toFixed(3)}, és a regularitási tényező a/b^d = ${regFactor.toFixed(3)} < 1, a gyökér költsége dominál.`;
+      }
+
+      document.getElementById('u40Out').innerHTML = `
+        <div class="var-grid">
+          <div class="var-card"><strong>Rekurzió:</strong><br/>T(n) = ${a}T(n/${b}) + Θ(n^${d})</div>
+          <div class="var-card"><strong>Kritikus kitevő (log<sub>b</sub> a):</strong><br/>${crit.toFixed(3)}</div>
+          <div class="var-card" style="border-color:var(--accent-green);"><strong>Megoldás:</strong><br/>${theta}</div>
+        </div>
+        <div class="math-box">
+          <strong>${caseTitle}:</strong> ${explanation}
+        </div>
+      `;
+    }
+
+    /* ==================== UNIT 6.0: HEAPSORT & PRIORITY QUEUES ==================== */
+    let HEAP_STEPS = [];
+    let HEAP_IDX = 0;
+    let PQ_ARRAY = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1];
+    let PQ_LOG = 'Kezdeti max-kupac betöltve (10 elem).';
+
+    function buildHeapsortSteps(inputArr) {
+      const A = [...inputArr];
+      const n = A.length;
+      let heapSize = n;
+      const steps = [];
+
+      function snap(phase, line, active, compare, desc, inv) {
+        steps.push({
+          arr: [...A],
+          heapSize,
+          n,
+          phase,
+          line,
+          active: [...active],
+          compare: [...compare],
+          desc,
+          inv
+        });
+      }
+
+      function maxHeapify(i) {
+        const l = 2 * i;
+        const r = 2 * i + 1;
+        let largest = i;
+        const cmp = [];
+        if (l <= heapSize) cmp.push(l);
+        if (r <= heapSize) cmp.push(r);
+
+        snap(
+          'MAX-HEAPIFY',
+          2,
+          [i],
+          cmp,
+          `MAX-HEAPIFY(A, ${i}): vizsgáljuk az i = ${i} (A[${i}]=${A[i-1]}) csúcsot és gyerekeit (${cmp.map(c => `A[${c}]=${A[c-1]}`).join(', ') || 'nincs gyerek'}).`,
+          `Az i=${i} csúcs bal (2i=${l}) és jobb (2i+1=${r}) részfája már max-kupac.`
+        );
+
+        if (l <= heapSize && A[l - 1] > A[largest - 1]) largest = l;
+        if (r <= heapSize && A[r - 1] > A[largest - 1]) largest = r;
+
+        if (largest !== i) {
+          snap(
+            'MAX-HEAPIFY (Csere)',
+            8,
+            [i, largest],
+            [],
+            `Csere: A[${i}] (${A[i-1]}) ↔ A[${largest}] (${A[largest-1]}), majd lesüllyesztés a ${largest}. csúcsra.`,
+            `A legnagyobb elem (A[${largest}]=${A[largest-1]}) felkerül a szülő pozíciójába.`
+          );
+          const tmp = A[i - 1];
+          A[i - 1] = A[largest - 1];
+          A[largest - 1] = tmp;
+          maxHeapify(largest);
+        }
+      }
+
+      snap(
+        'Kezdőállapot',
+        1,
+        [],
+        [],
+        `Bemeneti tömb betöltve (A.length = ${n}). Az első nem-levél csúcs: ⌊n/2⌋ = ${Math.floor(n/2)}.`,
+        `A ⌊n/2⌋+1 .. n indexű elemek mind 1 elemű levelek, így triviálisan max-kupacok.`
+      );
+
+      for (let i = Math.floor(n / 2); i >= 1; i--) {
+        snap(
+          'BUILD-MAX-HEAP',
+          2,
+          [i],
+          [],
+          `BUILD-MAX-HEAP ciklus: i = ${i} csúcs lesüllyesztése.`,
+          `Ciklusinvariáns (6.3. fejezet): minden i+1, i+2, …, n csúcs egy-egy max-kupac gyökere.`
+        );
+        maxHeapify(i);
+      }
+
+      snap(
+        'Max-kupac kész',
+        3,
+        [1],
+        [],
+        `A teljes tömb max-kupaccá alakult! A legnagyobb elem a gyökérben: A[1] = ${A[0]}.`,
+        `Teljesül a max-kupac tulajdonság minden 1 ≤ i ≤ ${n} csúcsra: A[PARENT(i)] ≥ A[i].`
+      );
+
+      for (let i = n; i >= 2; i--) {
+        snap(
+          'HEAPSORT (Gyökér kiemelése)',
+          4,
+          [1, i],
+          [],
+          `HEAPSORT iteráció (i = ${i}): megcseréljük a maximumot A[1]=${A[0]} és a kupac utolsó elemét A[${i}]=${A[i-1]}.`,
+          `Ciklusinvariáns (6.4. fejezet): A[1..${i}] max-kupac, míg A[${i+1}..${n}] már tartalmazza a ${n-i} legnagyobb elemet rendezve.`
+        );
+        const tmp = A[0];
+        A[0] = A[i - 1];
+        A[i - 1] = tmp;
+        heapSize--;
+        snap(
+          'HEAPSORT (Kupacméret csökkentése)',
+          5,
+          [1],
+          [],
+          `A[${i}] = ${A[i-1]} végleges helyére került! A.heap-size = ${heapSize}. Hívjuk a MAX-HEAPIFY(A, 1)-et.`,
+          `A[1..${heapSize}] gyökere sértheti a kupactulajdonságot, de bal és jobb részfája továbbra is max-kupac.`
+        );
+        maxHeapify(1);
+      }
+
+      heapSize = 0;
+      snap(
+        'HEAPSORT Befejezve',
+        6,
+        [],
+        [],
+        `A rendezés befejeződött! Eredmény: [${A.join(', ')}].`,
+        `Befejezés: A[1..${n}] teljesen növekvő sorrendben rendezett, helyben (O(1) segédmemóriával).`
+      );
+
+      return steps;
+    }
+
+    function renderHeapTreeSvg(arr, heapSize, active, compare) {
+      const n = arr.length;
+      if (!n) return '';
+      const W = 640;
+      const H = 265;
+      const coords = {};
+      for (let i = 1; i <= n; i++) {
+        const level = Math.floor(Math.log2(i));
+        const levelStart = Math.pow(2, level);
+        const posInLevel = i - levelStart;
+        const nodesInLevel = levelStart;
+        const x = ((posInLevel + 0.5) / nodesInLevel) * (W - 60) + 30;
+        const y = 38 + level * 68;
+        coords[i] = { x, y };
+      }
+
+      let edges = '';
+      for (let i = 2; i <= n; i++) {
+        const p = Math.floor(i / 2);
+        const c1 = coords[p];
+        const c2 = coords[i];
+        const inHeap = i <= heapSize;
+        edges += `<line x1="${c1.x}" y1="${c1.y}" x2="${c2.x}" y2="${c2.y}" stroke="${inHeap ? '#64748B' : '#CBD5E1'}" stroke-width="${inHeap ? '2' : '1.2'}" stroke-dasharray="${inHeap ? '' : '4 4'}" />`;
+      }
+
+      let nodes = '';
+      for (let i = 1; i <= n; i++) {
+        const { x, y } = coords[i];
+        const inHeap = i <= heapSize;
+        let fill = inHeap ? '#1E293B' : '#047857';
+        let stroke = inHeap ? '#475569' : '#047857';
+        if (active.includes(i)) {
+          fill = '#B45309';
+          stroke = '#F59E0B';
+        } else if (compare.includes(i)) {
+          fill = '#1E3A8A';
+          stroke = '#60A5FA';
+        }
+        nodes += `
+          <g>
+            <circle cx="${x}" cy="${y}" r="18" fill="${fill}" stroke="${stroke}" stroke-width="2.5" opacity="${inHeap ? '1' : '0.88'}" />
+            <text x="${x}" y="${y + 4}" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold" font-family="monospace">${arr[i - 1]}</text>
+            <text x="${x}" y="${y - 22}" text-anchor="middle" fill="#64748B" font-size="10" font-family="monospace">[${i}]</text>
+          </g>
+        `;
+      }
+
+      return `<svg class="chart" viewBox="0 0 ${W} ${H}">${edges}${nodes}</svg>`;
+    }
+
+    function renderUnit60() {
+      return unitShell('6.0', '6. Kupacrendezés (Heapsort & Prioritási sorok)', 'II. Rész • 6. fejezet: Kupacok, MAX-HEAPIFY, BUILD-MAX-HEAP, HEAPSORT, Prioritási sorok', `
+        <div class="section-block">
+          <span class="section-tag">A–C. Mi az a bináris kupac (Heap) és hogyan ábrázoljuk tömbben?</span>
+          <p>A <strong>(bináris) kupac</strong> olyan tömbobjektum, amelyet majdnem teljes bináris faként tekinthetünk. A fának minden szintje teljesen fel van töltve, kivéve esetleg a legalsót, amely balról jobbra haladva telítődik. Az <code>A</code> tömbnek két attribútuma van: <code>A.length</code> (a tömb elemeinek száma) és <code>A.heap-size</code> (a tömbben tárolt érvényes kupacelemek száma, <code>0 ≤ A.heap-size ≤ A.length</code>).</p>
+          <div class="math-box">
+            <strong>1-alapú indexkapcsolatok (O(1) bitműveletekkel):</strong><br/>
+            • <code>PARENT(i) = ⌊i / 2⌋</code><br/>
+            • <code>LEFT(i) = 2i</code><br/>
+            • <code>RIGHT(i) = 2i + 1</code><br/><br/>
+            <strong>Max-kupac tulajdonság:</strong> A gyökéren kívül minden <em>i</em> csúcsra teljesül: <code>A[PARENT(i)] ≥ A[i]</code>. Ennek következtében a kupac legnagyobb eleme mindig a gyökérben (<code>A[1]</code>) található!
+          </div>
+          <p><strong>6.1. tétel:</strong> Egy <em>n</em> elemű kupac magassága <code>⌊lg n⌋</code>, és egy <em>n</em> elemű kupacban legfeljebb <code>⌈n / 2<sup>h+1</sup>⌉</code> darab <em>h</em> magasságú csúcs található.</p>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">D–E. Interaktív HEAPSORT Laboratórium (Bináris fa + Tömb szinkron nézet)</span>
+          <p>Kövesd végig a teljes folyamatot: először a <strong>BUILD-MAX-HEAP</strong> alulról felfelé (<code>i = ⌊n/2⌋</code>-től <code>1</code>-ig) max-kupaccá alakítja a tömböt, majd a <strong>HEAPSORT</strong> egyesével kiemeli a gyökeret (<code>A[1]</code>) a tömb végére, csökkenti a <code>heap-size</code>-t, és helyreállítja a kupacot!</p>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <label>Bemeneti tömb (max 15 elem):</label>
+              <input type="text" id="heapInput" value="4, 1, 3, 2, 16, 9, 10, 14, 8, 7" />
+              <button class="btn btn-primary" onclick="initHeap()">Betöltés & Futtatás</button>
+              <button class="btn" onclick="stepHeap(-1)">← Előző</button>
+              <button class="btn" onclick="stepHeap(1)">Következő →</button>
+              <span id="heapCounter" style="font-size:0.84rem; font-weight:700;"></span>
+            </div>
+
+            <div id="heapTreeBox"></div>
+            <div id="heapArrayBox" class="heap-strip"></div>
+            <div id="heapVars" class="var-grid"></div>
+            <div id="heapInvBox" class="math-box"></div>
+
+            <div class="pseudocode" id="heapCode">
+              <div class="code-line" data-line="1"><span class="line-no">1</span><span><strong>HEAPSORT(A)</strong></span></div>
+              <div class="code-line" data-line="2"><span class="line-no">2</span><span>BUILD-MAX-HEAP(A) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// for i = ⌊A.length/2⌋ downto 1: MAX-HEAPIFY(A, i)</span></div>
+              <div class="code-line" data-line="3"><span class="line-no">3</span><span><strong>for</strong> i = A.length <strong>downto</strong> 2</span></div>
+              <div class="code-line" data-line="4"><span class="line-no">4</span><span>&nbsp;&nbsp;&nbsp;&nbsp;cseréld fel A[1] és A[i] elemet</span></div>
+              <div class="code-line" data-line="5"><span class="line-no">5</span><span>&nbsp;&nbsp;&nbsp;&nbsp;A.heap-size = A.heap-size - 1</span></div>
+              <div class="code-line" data-line="6"><span class="line-no">6</span><span>&nbsp;&nbsp;&nbsp;&nbsp;MAX-HEAPIFY(A, 1)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">F–G. Matematikai elemzés: Miért O(n) a BUILD-MAX-HEAP, és O(n lg n) a HEAPSORT?</span>
+          <div class="math-box">
+            <strong>1. MAX-HEAPIFY(A, i) futásideje:</strong><br/>
+            Egy <em>h</em> magasságú csúcs lesüllyesztése legfeljebb <em>h</em> szinten át halad lefelé, így költsége <strong>O(h) = O(lg n)</strong>.<br/><br/>
+            <strong>2. BUILD-MAX-HEAP(A) szoros elemzése (6.3. szakasz):</strong><br/>
+            Bár naivan <code>O(n) × O(lg n) = O(n lg n)</code> felső korlát adódna, a levelek (<em>h = 0</em>) 0 munkát igényelnek, és csak kevés csúcs van nagy magasságban:<br/>
+            <code>∑<sub>h=0..⌊lg n⌋</sub> ⌈n / 2<sup>h+1</sup>⌉ · O(h) = O(n · ∑<sub>h=0..∞</sub> h / 2<sup>h</sup>) = O(n · 2) = <strong>O(n)</strong></code> (lineáris idő!).<br/><br/>
+            <strong>3. HEAPSORT(A) összköltsége:</strong><br/>
+            <code>BUILD-MAX-HEAP</code> (<code>O(n)</code>) + <code>n - 1</code> darab <code>MAX-HEAPIFY(A, 1)</code> hívás (<code>(n - 1) · O(lg n)</code>) = <strong>O(n lg n)</strong>. Helyben rendez (<strong>O(1)</strong> segédtár), és egyesíti a Merge Sort (<code>O(n lg n)</code>) és az Insertion Sort (helyben rendezés) előnyeit!
+          </div>
+        </div>
+
+        <div class="section-block">
+          <span class="section-tag">6.5. szakasz: Prioritási sorok (Max-Priority Queue) Interaktív Labor</span>
+          <p>A kupacok egyik legfontosabb gyakorlati alkalmazása a <strong>prioritási sor</strong> (pl. operációs rendszerek feladatütemezője). Támogatott műveletek: <code>HEAP-MAXIMUM</code> (O(1)), <code>HEAP-EXTRACT-MAX</code> (O(lg n)), <code>HEAP-INCREASE-KEY</code> (O(lg n)) és <code>MAX-HEAP-INSERT</code> (O(lg n)).</p>
+          <div class="lab-panel">
+            <div class="controls-row">
+              <button class="btn btn-primary" onclick="pqExtractMax()">HEAP-EXTRACT-MAX(A)</button>
+              <input type="number" id="pqInsertVal" value="15" style="width:90px;" />
+              <button class="btn" onclick="pqInsert()">MAX-HEAP-INSERT(A, key)</button>
+              <button class="btn btn-sm" onclick="pqReset()">Alaphelyzet</button>
+            </div>
+            <div id="pqStatus" class="feedback fb-ok" style="margin-bottom:0.75rem;"></div>
+            <div id="pqTreeBox"></div>
+            <div id="pqArrayBox" class="heap-strip"></div>
+          </div>
+        </div>
+      `, [
+        {
+          q: '1. Miért O(n) és nem O(n lg n) a BUILD-MAX-HEAP eljárás futásideje?',
+          opts: [
+            'Mert a legtöbb csúcs a kupac alján (kis h magasságban) helyezkedik el, és a ∑ (h / 2^h) végtelen sor összege konstans (= 2).',
+            'Mert a BUILD-MAX-HEAP csak a gyökérelemet vizsgálja.'
+          ],
+          ans: 0,
+          exp: 'A ⌊n/2⌋ levélre h = 0 (0 lépés), a felettük lévő szinten n/4 csúcsra h = 1, és így tovább; a mértani-számtani sor összege 2-höz tart, így a teljes költség O(n).'
+        },
+        {
+          q: '2. Egy max-kupacban hol helyezkedhet el a legkisebb elem (ha minden elem különböző)?',
+          opts: [
+            'Mindig az A[n] utolsó pozícióban.',
+            'Kizárólag valamelyik levélcsúcsban (a ⌊n/2⌋ + 1 .. n indexek valamelyikén), mert egyetlen belső csúcs sem lehet kisebb a gyerekeinél.'
+          ],
+          ans: 1,
+          exp: 'Ha a legkisebb elemnek lenne gyereke, a max-kupac tulajdonság miatt nagyobb vagy egyenlő lenne a gyerekénél, ami ellentmondás.'
+        }
+      ]);
+    }
+
+    function initHeap() {
+      const inp = document.getElementById('heapInput');
+      if (!inp) return;
+      const arr = inp.value.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x)).slice(0, 15);
+      if (arr.length < 2) return;
+      HEAP_STEPS = buildHeapsortSteps(arr);
+      HEAP_IDX = 0;
+      renderHeapStep();
+    }
+
+    function stepHeap(d) {
+      if (!HEAP_STEPS.length) return;
+      HEAP_IDX = Math.max(0, Math.min(HEAP_STEPS.length - 1, HEAP_IDX + d));
+      renderHeapStep();
+    }
+
+    function renderHeapStep() {
+      const s = HEAP_STEPS[HEAP_IDX];
+      if (!s) return;
+      document.getElementById('heapCounter').textContent = `Lépés: ${HEAP_IDX + 1} / ${HEAP_STEPS.length}`;
+      document.getElementById('heapTreeBox').innerHTML = renderHeapTreeSvg(s.arr, s.heapSize, s.active, s.compare);
+      document.getElementById('heapArrayBox').innerHTML = s.arr.map((v, idx) => {
+        const i = idx + 1;
+        let cls = 'heap-cell';
+        if (s.active.includes(i)) cls += ' active';
+        else if (s.compare.includes(i)) cls += ' compare';
+        else if (i > s.heapSize) cls += ' sorted';
+        return `<div class="${cls}"><div style="font-size:0.68rem;color:var(--text-muted);">A[${i}]</div><div>${v}</div></div>`;
+      }).join('');
+
+      document.getElementById('heapVars').innerHTML = `
+        <div class="var-card"><strong>Fázis:</strong> ${s.phase}</div>
+        <div class="var-card"><strong>A.length:</strong> ${s.n}</div>
+        <div class="var-card"><strong>A.heap-size:</strong> ${s.heapSize}</div>
+        <div class="var-card"><strong>Rendezett rész:</strong> ${s.n - s.heapSize} elem</div>
+      `;
+      document.getElementById('heapInvBox').innerHTML = `<strong>Művelet:</strong> ${s.desc}<br/><strong>Invariáns / Tulajdonság:</strong> ${s.inv}`;
+      document.querySelectorAll('#heapCode .code-line').forEach(el => {
+        el.classList.toggle('active-line', Number(el.dataset.line) === s.line);
+      });
+    }
+
+    function pqMaxHeapify(A, i) {
+      const n = A.length;
+      while (true) {
+        const l = 2 * i;
+        const r = 2 * i + 1;
+        let largest = i;
+        if (l <= n && A[l - 1] > A[largest - 1]) largest = l;
+        if (r <= n && A[r - 1] > A[largest - 1]) largest = r;
+        if (largest !== i) {
+          const tmp = A[i - 1];
+          A[i - 1] = A[largest - 1];
+          A[largest - 1] = tmp;
+          i = largest;
+        } else {
+          break;
+        }
+      }
+    }
+
+    function pqExtractMax() {
+      if (PQ_ARRAY.length === 0) {
+        PQ_LOG = 'Kupac alulcsordulás (heap underflow): a prioritási sor üres!';
+        renderPQ();
+        return;
+      }
+      const max = PQ_ARRAY[0];
+      const last = PQ_ARRAY.pop();
+      if (PQ_ARRAY.length > 0) {
+        PQ_ARRAY[0] = last;
+        pqMaxHeapify(PQ_ARRAY, 1);
+      }
+      PQ_LOG = `HEAP-EXTRACT-MAX(A) → Visszaadott maximum: ${max}. Az utolsó elem (${last}) a gyökérbe került, majd MAX-HEAPIFY(A, 1) helyreállította a kupacot O(lg n) időben.`;
+      renderPQ();
+    }
+
+    function pqInsert() {
+      if (PQ_ARRAY.length >= 15) {
+        PQ_LOG = 'A vizuális laborban legfeljebb 15 elem jeleníthető meg egyszerre.';
+        renderPQ();
+        return;
+      }
+      const val = Number(document.getElementById('pqInsertVal').value);
+      if (Number.isNaN(val)) return;
+      PQ_ARRAY.push(val);
+      let i = PQ_ARRAY.length;
+      let swaps = 0;
+      while (i > 1 && PQ_ARRAY[Math.floor(i / 2) - 1] < PQ_ARRAY[i - 1]) {
+        const p = Math.floor(i / 2);
+        const tmp = PQ_ARRAY[p - 1];
+        PQ_ARRAY[p - 1] = PQ_ARRAY[i - 1];
+        PQ_ARRAY[i - 1] = tmp;
+        i = p;
+        swaps++;
+      }
+      PQ_LOG = `MAX-HEAP-INSERT(A, ${val}) → Beszúrva a végére, majd HEAP-INCREASE-KEY ${swaps} szülő-cserével felfelé buborékoltatta a helyére O(lg n) időben.`;
+      renderPQ();
+    }
+
+    function pqReset() {
+      PQ_ARRAY = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1];
+      PQ_LOG = 'Kezdeti max-kupac visszaállítva (10 elem).';
+      renderPQ();
+    }
+
+    function renderPQ() {
+      const st = document.getElementById('pqStatus');
+      if (!st) return;
+      st.textContent = PQ_LOG;
+      document.getElementById('pqTreeBox').innerHTML = PQ_ARRAY.length
+        ? renderHeapTreeSvg(PQ_ARRAY, PQ_ARRAY.length, [1], [])
+        : '<div style="padding:1rem; text-align:center; color:var(--text-muted);">A prioritási sor jelenleg üres.</div>';
+      document.getElementById('pqArrayBox').innerHTML = PQ_ARRAY.map((v, idx) => `
+        <div class="heap-cell ${idx === 0 ? 'active' : ''}">
+          <div style="font-size:0.68rem;color:var(--text-muted);">A[${idx + 1}]</div>
+          <div>${v}</div>
+        </div>
+      `).join('');
+    }
+
+    /* ==================== SHARED UNIT SHELL & QUIZ ==================== */
+    function unitShell(id, title, subtitle, bodyHtml, quizzes) {
+      const u = UNITS.find(x => x.id === id);
+      const isDone = !!STATE.completed[id];
+      const quizHtml = quizzes.map((q, idx) => {
+        const key = `${id}_${idx}`;
+        const picked = STATE.quizSolved[key];
+        return `
+          <div class="quiz-item">
+            <strong>${q.q}</strong>
+            ${q.opts.map((opt, oi) => `
+              <button class="quiz-opt" onclick="answerQuiz('${id}', ${idx}, ${oi}, ${q.ans})">${opt}</button>
+            `).join('')}
+            ${picked !== undefined ? `
+              <div class="feedback ${picked === q.ans ? 'fb-ok' : 'fb-err'}">
+                ${picked === q.ans ? 'Helyes válasz! ' : 'Nem pontos. '}${q.exp}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="hero-card" style="padding:1.5rem;">
+          <div class="book-meta">${subtitle}</div>
+          <h1 style="margin-bottom:0.35rem;">${title}</h1>
+          <div style="font-size:0.86rem; color:var(--text-muted);">
+            <strong>Szükséges előismeretek:</strong> ${u ? u.prereq : ''}
+          </div>
+        </div>
+        ${bodyHtml}
+        <div class="section-block">
+          <span class="section-tag">H–I. Ellenőrző kérdések és összefoglalás</span>
+          ${quizHtml}
+          <div class="controls-row" style="margin-top:1rem; margin-bottom:0; justify-content:space-between;">
+            <button class="btn ${isDone ? '' : 'btn-primary'}" onclick="markComplete('${id}')">
+              ${isDone ? '✓ Teljesítve (visszavonás)' : 'Egység megjelölése teljesítettként'}
+            </button>
+            ${getNextButton(id)}
+          </div>
+        </div>
+      `;
+    }
+
+    function getNextButton(id) {
+      const readyUnits = UNITS.filter(u => u.ready);
+      const idx = readyUnits.findIndex(u => u.id === id);
+      if (idx >= 0 && idx < readyUnits.length - 1) {
+        const next = readyUnits[idx + 1];
+        return `<button class="btn btn-primary" onclick="navigate('${next.id}')">Tovább: ${next.title} →</button>`;
+      }
+      return `<button class="btn" onclick="navigate('home')">Vissza a tartalomjegyzékhez</button>`;
+    }
+
+    function answerQuiz(unitId, qIdx, choice, correct) {
+      STATE.quizSolved[`${unitId}_${qIdx}`] = choice;
+      saveState();
+      renderMain();
+    }
+
+    function renderMain() {
+      const el = document.getElementById('content');
+      if (STATE.view === 'home') {
+        el.innerHTML = renderHome();
+        updateHomeChart(16);
+      } else if (STATE.view === '1.1') {
+        el.innerHTML = renderUnit11();
+      } else if (STATE.view === '1.2') {
+        el.innerHTML = renderUnit12();
+        update12(7);
+      } else if (STATE.view === '2.1') {
+        el.innerHTML = renderUnit21();
+        initIS();
+      } else if (STATE.view === '2.2') {
+        el.innerHTML = renderUnit22();
+        update22(20);
+      } else if (STATE.view === '2.3') {
+        el.innerHTML = renderUnit23();
+        initMS();
+      } else if (STATE.view === '3.0') {
+        el.innerHTML = renderUnit30();
+        update30();
+      } else if (STATE.view === '4.0') {
+        el.innerHTML = renderUnit40();
+        update40();
+      } else if (STATE.view === '6.0') {
+        el.innerHTML = renderUnit60();
+        initHeap();
+        renderPQ();
+      } else {
+        el.innerHTML = renderHome();
+        updateHomeChart(16);
+      }
+    }
+
+    renderSidebar();
+    renderMain();
+  </script>
+</body>
+</html>
